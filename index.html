@@ -3,579 +3,424 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SHIFT — Institutional Variant (with Theme Studio)</title>
+<title>SHIFT — Institutional / Modern A·B (Stacked)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-/* ===================== TOKENS (Institutional defaults) ===================== */
+/* ───────────────── TOKENS (Institutional defaults) ───────────────── */
 :root{
-  --ink:#0b1426; --ink-2:#4b5563; --ink-3:#6b7280;
-  --brand:#0b3b6e;        /* deep navy — editable */
-  --accent:#0f766e;       /* teal — editable */
-  --bg-start:#f6f8fb;     /* background gradient start — editable */
-  --bg-end:#edf2f7;       /* background gradient end — editable */
-  --card:#ffffff; --line:#e5e7eb; --shadow:15,23,42;
-  --r-xl:14px; --r-lg:12px;
+  --ink:#0b1220; --ink-2:#475569; --ink-3:#64748b;
+  --brand:#0b3b6e;     /* Primary */
+  --accent:#0f766e;    /* Accent */
+  --bg-start:#f6f8fb;  /* Background gradient */
+  --bg-end:#edf2f7;
+  --surface:#ffffff;   /* Card surface */
+  --line:#e5e7eb;      /* Hairline borders */
+  --radius:8px; --radius-sm:6px;
+  --pad-card: clamp(14px, 1.8vw, 18px);
+  --pad-rail: 14px;
+  --kpi-pos:#16a34a; --kpi-neg:#dc2626;
 }
 
-/* ===================== BASE ===================== */
+/* Density (compact = tighter) */
+body[data-density="compact"]{
+  --radius:6px; --radius-sm:5px;
+  --pad-card: clamp(10px,1.2vw,14px);
+  --pad-rail:12px;
+}
+
+/* ───────────────── Base & layout guards ───────────────── */
 *,:before,:after{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%; overflow-x:hidden;} /* hard guard */
 body{
-  margin:0; color:var(--ink); font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  background:#f6f8fb; overflow-x:hidden;
+  margin:0; color:var(--ink);
+  font:15.5px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background:#f6f8fb;
 }
+img,svg,canvas,video{max-width:100%; height:auto; display:block;}
+:focus-visible{outline:3px solid color-mix(in oklab, var(--brand), #ffffff 65%); outline-offset:3px; border-radius:8px;}
+@media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth} }
 
-/* Single long gradient (no repeat) */
-.bg{
-  position:fixed; inset:0; z-index:-1; pointer-events:none;
-  background:linear-gradient(160deg,var(--bg-start) 0%, var(--bg-start) 40%, var(--bg-end) 100%);
+/* Single long gradient */
+.bg{position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(160deg,var(--bg-start) 0%, var(--bg-start) 45%, var(--bg-end) 100%);
   background-size:100% 100%; background-attachment:fixed;
 }
-/* subtle vignette for depth */
-.bg::after{content:""; position:absolute; inset:0;
-  background:radial-gradient(1200px 600px at 85% 10%, rgba(11,59,110,.06), transparent 55%),
-             radial-gradient(1000px 520px at 10% 90%, rgba(15,118,110,.05), transparent 60%);
-}
 
-.container{width:min(1200px,92vw); margin-inline:auto}
-section{padding:clamp(22px,3.2vw,44px) 0}
+/* Container never uses 100vw (prevents scrollbar-width overflow) */
+.container{ width:min(1280px, 100%); margin-inline:auto; padding-inline:clamp(12px,4vw,28px); }
+section{ padding-block:clamp(20px,3.2vw,38px); }
 
-/* ===================== NAV (crisp & neutral) ===================== */
-.nav{
-  position:sticky; top:0; z-index:50; background:#fff;
-  border-bottom:1px solid var(--line);
-}
-.nav-inner{display:flex; align-items:center; gap:20px; padding:10px 8px}
-.logo{font:800 clamp(18px,2.2vw,22px) Inter; letter-spacing:.2px; padding:2px 10px}
-.nav-links{display:flex; gap:14px; margin-left:8px; flex:1 1 auto}
-.nav-links a{
-  text-decoration:none; color:var(--ink-2); font-weight:700;
-  padding:10px 12px; border-radius:8px;
-}
+/* ───────────────── Top bar ───────────────── */
+.nav{position:sticky; top:0; z-index:80; background:var(--surface); border-bottom:1px solid var(--line)}
+.nav-inner{display:flex; align-items:center; gap:18px; padding:10px 2px}
+.logo{font:800 clamp(18px,2.2vw,22px) Inter; letter-spacing:.2px}
+.nav-links{display:flex; gap:14px; margin-left:8px; flex:1; flex-wrap:wrap}
+.nav-links a{padding:10px 12px; border-radius:6px; text-decoration:none; color:var(--ink-2); font-weight:700}
 .nav-links a:hover{background:#f3f4f6; color:var(--ink)}
-.cta{
-  background:var(--brand); color:#fff; font-weight:800; text-decoration:none;
-  padding:10px 14px; border-radius:10px; letter-spacing:.2px;
-  box-shadow:0 6px 18px rgba(var(--shadow),.12);
-}
-.burger{display:none;width:40px;height:40px;place-items:center;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
-.burger span,.burger::before,.burger::after{content:"";display:block;width:18px;height:2px;background:#0f172a;border-radius:2px}
-.burger span{margin:4px 0}
-@media (max-width:860px){
-  .nav-links{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;border-bottom:1px solid var(--line);padding:8px}
-  .nav.open .nav-links{display:flex;flex-direction:column;gap:6px}
-  .burger{display:grid}
-}
+.cta{background:var(--brand); color:#fff; text-decoration:none; padding:10px 14px; border-radius:8px; font-weight:800}
 
-/* ===================== PROMOS (more understated) ===================== */
-.promo-grid{display:grid;gap:16px;grid-template-columns:1.05fr .95fr}
-@media (max-width:1000px){.promo-grid{grid-template-columns:1fr}}
-.promo{
-  background:#fff; border:1px solid var(--line); border-radius:var(--r-xl);
-  box-shadow:0 8px 28px rgba(var(--shadow),.06);
-  display:grid; grid-template-columns:1.1fr .9fr; align-items:center; overflow:hidden;
+/* A/B switcher button */
+.ab-switch{
+  margin-left:auto; display:flex; gap:8px; align-items:center;
+  border:1px solid var(--line); background:#fff; border-radius:999px; padding:4px;
 }
-.promo.tight{grid-template-columns:1fr 1fr}
-@media (max-width:700px){.promo{grid-template-columns:1fr}}
-.promo .copy{padding:clamp(16px,2.4vw,24px)}
-.kicker{font-weight:800; color:var(--ink-2); letter-spacing:.08em; text-transform:uppercase}
-.title{font:800 clamp(21px,2.6vw,28px)/1.2 Inter; margin:.35rem 0 .6rem}
-.p{color:var(--ink-3); margin:0 0 1.1rem; max-width:54ch}
-.promo .cta-row{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:.6ch;padding:10px 14px;border-radius:10px;font-weight:800;text-decoration:none;border:1px solid var(--line);background:#fff;color:#0b1426}
-.btn:hover{background:#f8fafc}
-.btn.primary{border-color:transparent;background:var(--brand);color:#fff}
-.btn.accent{border-color:transparent;background:var(--accent);color:#fff}
-.promo .media{
-  min-height:170px; height:100%; display:grid; place-items:center; border-left:1px solid var(--line);
-  background:linear-gradient(135deg,#0f1827 0%, #0d2236 45%, #0c2a3f 100%);
-}
+.ab-switch button{border:0; background:transparent; padding:8px 12px; border-radius:999px; font:800 12px Inter; cursor:pointer;}
+.ab-switch button.active{background:var(--brand); color:#fff}
 
-/* ===================== OVERVIEW WIDGETS ===================== */
-.widgets{display:grid;gap:16px}
-.widgets-row{display:grid;gap:16px;grid-template-columns:repeat(3,1fr)}
-@media (max-width:1100px){.widgets-row{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:720px){.widgets-row{grid-template-columns:1fr}}
-.card{
-  background:#fff; border:1px solid var(--line); border-radius:var(--r-xl);
-  box-shadow:0 8px 28px rgba(var(--shadow),.06); overflow:hidden
-}
-.pad-lg{padding:clamp(16px,2.4vw,24px)} .pad-md{padding:clamp(14px,2vw,18px)}
-.h3{font:800 20px/1.2 Inter;margin:0 0 10px}
-.meta-line{color:var(--ink-3);font-size:.95rem}
-.rule{border:0;border-top:1px solid var(--line);margin:12px 0}
-.thumb-rect{
-  height:130px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:repeating-linear-gradient(45deg,#131c2a 0 8px,#182233 8px 16px);
-  color:#fff;margin:8px 0 10px
-}
-.pill{
-  display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;border-radius:8px;
-  font-weight:800;font-size:.9rem;border:1px solid var(--line);background:#f9fafb;color:#374151
-}
+/* ───────────────── Header band ───────────────── */
+.band{background:linear-gradient(180deg, #fff, #fff0 60%); border-bottom:1px solid var(--line);}
+.band-inner{display:flex; align-items:end; gap:10px; padding-block:14px}
+.tag{font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2); font-size:.78rem}
+h1{font:800 clamp(20px,2.6vw,28px)/1.15 Inter; margin:0; letter-spacing:-.01em}
+.crumb{color:var(--ink-3); font-weight:600}
+
+/* ───────────────── Components ───────────────── */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:0 1px 0 rgba(2,6,23,.02);}
+.pad{padding:var(--pad-card);}
+.h3{font:800 18px/1.2 Inter; margin:0 0 10px; position:relative; padding-left:12px}
+.h3::before{content:""; position:absolute; left:0; top:3px; bottom:3px; width:4px; border-radius:3px; background:var(--brand);}
+.meta{color:var(--ink-3); font-size:.93rem}
+.rule{border:0; border-top:1px solid var(--line); margin:12px 0}
+
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+@media (max-width:960px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .kpis{grid-template-columns:1fr} }
+.kpi{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:12px}
+.kpi .label{color:var(--ink-2); font-weight:700; font-size:.85rem}
+.kpi .val{font:800 clamp(18px,2vw,22px) Inter}
+.kpi .delta{font-weight:800; font-size:.85rem}
+.kpi .delta.up{color:var(--kpi-pos)} .kpi .delta.down{color:var(--kpi-neg)}
+
+/* Grids */
+.grid-2{display:grid; gap:16px; grid-template-columns:1fr 1fr}
+.grid-3{display:grid; gap:16px; grid-template-columns:repeat(3,1fr)}
+@media (max-width:1100px){ .grid-3{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:720px){ .grid-3,.grid-2{grid-template-columns:1fr} }
+
+/* Force single-column where needed */
+.stacked{ grid-template-columns:1fr !important; }
+
+/* Pills & badges */
+.pill{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border-radius:6px;font-weight:800;font-size:.86rem;border:1px solid var(--line);background:#f8fafc;color:#334155}
 .pill.neutral{background:#fff7ed;color:#92400e;border-color:#fed7aa}
-.pill.positive{background:#ecfdf5;color:#064e3b;border-color:#99f6e4}
-.table-wrap{border:1px solid var(--line);border-radius:10px;overflow:auto;background:#fff;max-height:340px}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left}
-.table th{font-weight:800;color:var(--ink-2);background:#f8fafc}
-.badge{display:inline-block;padding:6px 10px;border-radius:8px;font-weight:800;font-size:.85rem;border:1px solid var(--line);background:#fff;color:#111827}
-.badge.green{background:#0ea5e9; color:#fff; border-color:transparent}
-.badge.yellow{background:#f59e0b; color:#111827; border-color:transparent}
-.badge.gray{background:#e5e7eb; color:#111827; border-color:transparent}
+.pill.positive{background:#ecfdf5;color:#065f46;border-color:#99f6e4}
+.badge{display:inline-block;padding:5px 9px;border-radius:6px;font-weight:800;font-size:.82rem;border:1px solid var(--line);background:#fff;color:#111827}
+.badge.green{background:var(--accent);color:#fff;border-color:transparent}
+.badge.yellow{background:#f59e0b;color:#111827;border-color:transparent}
+.badge.gray{background:#e5e7eb;color:#111827;border-color:transparent}
+
+/* Tables */
+.table-wrap{border:1px solid var(--line); border-radius:8px; overflow:auto; background:#fff; max-height:360px}
+.table{width:100%; border-collapse:collapse; min-width:720px}
+.table th,.table td{ padding:11px 12px; border-bottom:1px solid var(--line); text-align:left }
+.table th{ font-weight:800; color:var(--ink-2); background:#f8fafc }
 
 /* Charts */
-.chart{width:100%;height:240px;display:block}
+.chart{width:100%; height:240px; display:block}
+.chart.small{height:200px}
 
-/* ===================== TEXT SECTIONS / RAIL ===================== */
-.panel{display:grid;gap:20px;grid-template-columns:1.05fr 1.3fr}
-@media (max-width:980px){.panel{grid-template-columns:1fr}}
-.eyebrow{font-weight:800;color:var(--ink-2);letter-spacing:.08em;text-transform:uppercase}
-.headline{font:800 clamp(24px,3.2vw,36px)/1.15 Inter;margin:6px 0 12px}
-.lede{color:var(--ink-3);max-width:60ch;margin:0 0 16px}
-.rail-wrap{position:relative;height:100%}
+/* Rails — NO mask (prevents overflow issues). Arrows are inside container. */
+.rail-wrap{ overflow:hidden; position:relative; max-width:100%; }
 .rail{
-  display:grid;grid-auto-flow:column;grid-auto-columns:minmax(280px,1fr);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:16px; scrollbar-width:thin; background:#fff; border:1px solid var(--line); border-radius:var(--r-xl)
+  display:grid; grid-auto-flow:column; grid-auto-columns:minmax(280px,1fr);
+  gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding:var(--pad-rail);
+  border:1px solid var(--line); border-radius:var(--radius);
+  background:#fff; scrollbar-width:thin;
 }
-@media (max-width:700px){.rail{grid-auto-columns:minmax(78%,1fr)}}
-.rail::-webkit-scrollbar{height:10px}.rail::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:20px}
-.mini{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 6px 20px rgba(var(--shadow),.05);scroll-snap-align:start;transition:transform .2s,box-shadow .2s}
-.mini:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(var(--shadow),.08)}
-.mini .thumb{height:112px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;background:#0f1827;color:#fff}
-.thumb svg{width:68px;height:68px;opacity:.9}
-.mini .copy{padding:12px 14px}
-.mini h4{font:800 15px/1.25 Inter;margin:0 0 6px}
-.meta{display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:.9rem}
-.rail-btn{display:none} /* removed arrows for a cleaner institutional rail */
+.rail::-webkit-scrollbar{height:10px}
+.rail::-webkit-scrollbar-thumb{background:#cbd5e1; border-radius:20px}
+.mini{border:1px solid var(--line); border-radius:6px; background:#fff; box-shadow:0 1px 0 rgba(2,6,23,.04); scroll-snap-align:start}
+.mini .th{height:110px;border-bottom:1px solid var(--line);background:#0f1827;display:flex;align-items:center;justify-content:center;color:#fff}
+.mini .cp{padding:12px}
+.mini h4{margin:0 0 6px;font:800 14.5px/1.25 Inter}
+.mini .meta{font-size:.88rem}
 
-/* ===================== BOTTOM GRID ===================== */
-.grid-2{display:grid;gap:16px;grid-template-columns:1fr 1fr}
-@media (max-width:900px){.grid-2{grid-template-columns:1fr}}
-.grid-2.tight .chart{height:220px}
-.small-bars{height:180px}
+.rail-btn{
+  position:absolute; top:50%; translate:0 -50%;
+  width:36px; height:36px; display:grid; place-items:center; border-radius:50%;
+  border:1px solid var(--line); background:#fff; box-shadow:0 6px 18px rgba(2,6,23,.12);
+  cursor:pointer; transition:opacity .2s ease; z-index:2;
+}
+.rail-btn[disabled]{opacity:.35; pointer-events:none}
+.rail-btn.left{ left:12px } .rail-btn.right{ right:12px }
 
-/* Reveal + footer */
-.reveal{opacity:0;transform:translateY(14px)}
-.reveal.is-in{opacity:1;transform:none;transition:all .55s cubic-bezier(.2,.7,0,.9)}
-footer{color:var(--ink-3);padding:42px 0 60px;text-align:center}
+/* Footer */
+footer{color:var(--ink-3); padding:40px 0 56px; text-align:center}
 
-/* ===================== THEME STUDIO (same controls) ===================== */
+/* ─────────────── Theme Studio (floating) ─────────────── */
 .theme-fab{
-  position:fixed; right:18px; bottom:18px; z-index:60;
-  width:52px; height:52px; border-radius:12px; border:1px solid var(--line);
-  background:var(--brand); color:#fff; display:grid; place-items:center;
-  box-shadow:0 12px 32px rgba(var(--shadow),.16); cursor:pointer;
+  position:fixed; right:18px; bottom:18px; z-index:90;
+  width:50px; height:50px; border-radius:10px; border:1px solid var(--line);
+  background:var(--brand); color:#fff; display:grid; place-items:center; cursor:pointer;
 }
 .theme-panel{
-  position:fixed; right:18px; bottom:84px; width:min(360px,92vw);
-  background:#fff; border:1px solid var(--line); border-radius:12px;
-  box-shadow:0 22px 60px rgba(var(--shadow),.18); padding:14px; z-index:60; display:none;
+  position:fixed; right:18px; bottom:82px; width:min(370px,92vw);
+  background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 18px 60px rgba(2,6,23,.18);
+  padding:12px; z-index:90; display:none; max-width:calc(100% - 36px);
 }
 .theme-panel.open{display:block}
-.theme-panel h4{margin:0 0 10px;font:800 16px Inter}
-.theme-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.theme-row label{font:700 12px Inter;color:var(--ink-2);letter-spacing:.04em}
-.theme-row input[type="color"]{width:100%;height:40px;border-radius:8px;border:1px solid var(--line);background:#fff}
-.theme-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
-.tbtn{padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;font:700 12px Inter;cursor:pointer}
-.tbtn.save{background:var(--brand);color:#fff;border-color:transparent}
+.theme-panel h4{margin:0 0 8px; font:800 15px Inter}
+.theme-row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px}
+.theme-row label{font:700 12px Inter; color:var(--ink-2)}
+.theme-row input[type="color"]{width:100%; height:38px; border-radius:8px; border:1px solid var(--line); background:#fff}
+.theme-actions{display:flex; gap:8px; justify-content:space-between; align-items:center; flex-wrap:wrap}
+.tbtn{padding:9px 10px; border-radius:8px; border:1px solid var(--line); background:#fff; font:700 12px Inter; cursor:pointer}
+.tbtn.save{background:var(--brand); color:#fff; border-color:transparent}
+
+/* Presets + Density */
+.presets{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.preset{border:1px solid var(--line); background:#fff; border-radius:999px; padding:6px 10px; font:700 12px Inter; cursor:pointer}
+.preset:hover{background:#f8fafc}
+.switch{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+.switch button{padding:7px 10px; font:700 12px Inter; border:0; background:#fff; cursor:pointer}
+.switch button.active{background:var(--brand); color:#fff}
+
+/* ─────────────── MODERN GLASS THEME (A/B) ─────────────── */
+body[data-skin="modern"]{
+  --bg-start:#ecf3ff; --bg-end:#f7f9ff;
+  --brand:#0f3fb0; --accent:#0bb39b;
+}
+body[data-skin="modern"] .nav{background:rgba(255,255,255,.7); backdrop-filter:saturate(160%) blur(8px);}
+body[data-skin="modern"] .card{
+  background:linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.6));
+  border:1px solid rgba(255,255,255,.55); backdrop-filter:saturate(180%) blur(10px);
+  box-shadow:0 10px 30px rgba(15,23,42,.08);
+}
+body[data-skin="modern"] .rail{background:linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.62));}
+body[data-skin="modern"] .mini{box-shadow:0 8px 26px rgba(15,23,42,.08);}
+body[data-skin="modern"] .cta{box-shadow:0 10px 20px rgba(15,23,42,.12);}
 </style>
 </head>
-<body>
+<body data-skin="institutional">
 <div class="bg" aria-hidden="true"></div>
 
-<nav class="nav" id="nav">
+<nav class="nav">
   <div class="container nav-inner">
     <div class="logo">SHIFT</div>
-    <button class="burger" id="burger" aria-label="Toggle menu"><span></span></button>
-    <div class="nav-links" id="links">
-      <a href="#promos">Dashboard</a>
-      <a href="#widgets">Overview</a>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
       <a href="#research">Research</a>
-      <a href="#learn">Education</a>
-      <a href="#trades">Trades</a>
+      <a href="#education">Education</a>
       <a href="#deepdive">Deep&nbsp;Dive</a>
     </div>
+
+    <!-- A/B switcher -->
+    <div class="ab-switch" role="group" aria-label="Theme A/B">
+      <button id="btnInstitutional" class="active">Institutional</button>
+      <button id="btnModern">Modern</button>
+    </div>
+
     <a class="cta" href="#">Join for Free</a>
   </div>
 </nav>
 
+<header class="band">
+  <div class="container band-inner">
+    <span class="tag">Quantitative Tools</span>
+    <h1>Dashboard</h1>
+    <span class="crumb">/ A·B Demo</span>
+  </div>
+</header>
+
 <main class="container">
-  <!-- PROMOS -->
-  <section id="promos" class="reveal">
-    <div class="promo-grid">
-      <article class="promo">
-        <div class="copy">
-          <div class="kicker">Systematic Tools & Process</div>
-          <h2 class="title">Overview of the TSR framework</h2>
-          <p class="p">Evidence-led, rules-based methodology: market regime, positioning signals, and portfolio construction.</p>
-          <div class="cta-row">
-            <a class="btn primary" href="#">Watch Video</a>
-            <a class="btn" href="#">View the PDF</a>
-          </div>
-        </div>
-        <div class="media" aria-hidden="true">
-          <svg viewBox="0 0 600 260" fill="none">
-            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--brand)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
-            <rect x="16" y="24" width="160" height="10" rx="5" fill="var(--accent)" opacity=".4"/>
-            <rect x="16" y="48" width="110" height="10" rx="5" fill="var(--brand)" opacity=".45"/>
-            <rect x="16" y="72" width="140" height="10" rx="5" fill="#94a3b8" opacity=".5"/>
-            <polyline points="200,200 260,140 310,160 360,110 420,140 480,90 540,120" stroke="url(#g1)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-      </article>
-
-      <article class="promo tight">
-        <div class="copy">
-          <div class="kicker">Community Updates</div>
-          <h2 class="title">Join the Telegram Channel</h2>
-          <p class="p">Intra-week notes and Q&A with the team. Concise and practical.</p>
-          <div class="cta-row">
-            <a class="btn primary" href="#">Join Our Telegram</a>
-            <a class="btn" href="#">Read Guidelines</a>
-          </div>
-        </div>
-        <div class="media" aria-hidden="true">
-          <svg viewBox="0 0 600 260" fill="none">
-            <rect x="60" y="46" width="220" height="90" rx="12" fill="#0f1827" opacity=".65" stroke="var(--brand)" stroke-width="2"/>
-            <circle cx="120" cy="90" r="10" fill="var(--brand)"/><rect x="142" y="78" width="110" height="22" rx="5" fill="var(--brand)"/>
-            <rect x="320" y="120" width="220" height="90" rx="12" fill="#0b2a29" opacity=".6" stroke="var(--accent)" stroke-width="2"/>
-            <circle cx="380" cy="164" r="10" fill="var(--accent)"/><rect x="402" y="152" width="110" height="22" rx="5" fill="var(--accent)"/>
-          </svg>
-        </div>
-      </article>
+  <!-- KPIs -->
+  <section>
+    <div class="kpis">
+      <div class="kpi"><div class="label">Core4 YTD</div><div class="val">+12.3%</div><div class="delta up">+0.6% this month</div></div>
+      <div class="kpi"><div class="label">Sharpe (1Y)</div><div class="val">1.28</div><div class="delta up">↑ improving</div></div>
+      <div class="kpi"><div class="label">Max Drawdown (1Y)</div><div class="val">-7.9%</div><div class="delta down">–0.3% latest</div></div>
+      <div class="kpi"><div class="label">BTC Beta</div><div class="val">0.62</div><div class="delta">stable</div></div>
     </div>
   </section>
 
-  <!-- OVERVIEW WIDGETS -->
-  <section id="widgets" class="widgets reveal">
-    <div class="widgets-row">
-      <article class="card pad-md">
-        <h3 class="h3">Latest Publication</h3>
-        <div class="thumb-rect"></div>
-        <div class="meta-line"><strong>Macro Update:</strong> Do markets still have room to run?</div>
-        <div class="meta-line">📅 July 1, 2025 · Market Updates, Research & Insights</div>
-      </article>
-
-      <article class="card pad-md">
-        <h3 class="h3">Current Bitcoin Positioning Signal</h3>
-        <div class="meta-line">Latest Signal Change: August 18th 2025</div>
-        <div style="margin:12px 0 6px;"><span class="pill neutral">Neutral</span></div>
-        <hr class="rule" />
-        <h3 class="h3" style="margin-top:6px;">Current Market Regime</h3>
-        <div class="meta-line">Latest Risk-on/Risk-off Change: May 2025</div>
-        <div style="margin:12px 0;"><span class="pill positive">Risk-on Disinflation</span></div>
-      </article>
-
-      <article class="card pad-md">
-        <h3 class="h3">Fear & Greed Index</h3>
-        <canvas class="chart" id="gauge"></canvas>
-        <div class="meta-line" id="gaugeLabel" style="text-align:center;margin-top:8px;">Now: Greed (72)</div>
-      </article>
-    </div>
-
-    <div class="widgets-row">
-      <article class="card pad-md">
-        <h3 class="h3">Systematic Positioning Guide</h3>
-        <div class="meta-line" style="margin-bottom:10px;">Select Position Mode: <span class="badge gray">Long Only</span></div>
-        <div class="table-wrap">
-          <table class="table" aria-label="Systematic Positioning Guide">
-            <thead><tr><th>Asset</th><th>Signal</th><th>Position</th></tr></thead>
-            <tbody>
-              <tr><td>Bitwise 10 Crypto Index Fund</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td></tr>
-              <tr><td>Bitcoin</td><td><span class="badge yellow">neutral</span></td><td><span class="badge gray">Long 50%</span></td></tr>
-              <tr><td>ETH/BTC</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </article>
-
-      <article class="card pad-md">
-        <h3 class="h3">Crypto Portfolio</h3>
-        <canvas class="chart" id="pie1"></canvas>
-      </article>
-
-      <article class="card pad-md">
-        <h3 class="h3">CORE4 Portfolio</h3>
-        <canvas class="chart" id="pie2"></canvas>
-      </article>
-    </div>
-
-    <div class="card pad-md" style="border-radius:999px;display:flex;justify-content:center;align-items:center">
-      <a class="btn primary" href="#">Go To Quantitative Tools Dashboard</a>
-    </div>
-  </section>
-
-  <!-- TEXT SECTIONS -->
-  <section id="research" class="panel reveal">
-    <article class="card pad-lg">
-      <div class="eyebrow">Research & Insights</div>
-      <h2 class="headline">Understand the market beyond the noise.</h2>
-      <p class="lede">Evidence-based notes and structured views across regimes, risk, and positioning.</p>
-      <a class="btn" href="#">View More</a>
-    </article>
-    <aside class="card pad-md rail-wrap" data-rail="research"></aside>
-  </section>
-
-  <section id="learn" class="panel reveal">
-    <article class="card pad-lg">
-      <div class="eyebrow">Education</div>
-      <h2 class="headline">Clear lessons. Practical skills.</h2>
-      <p class="lede">Bite-sized modules on mechanics, risks, and strategies that matter.</p>
-      <a class="btn" href="#">Start Learning</a>
-    </article>
-    <aside class="card pad-md rail-wrap" data-rail="learn"></aside>
-  </section>
-
-  <section id="trades" class="panel reveal">
-    <article class="card pad-lg">
-      <div class="eyebrow">Trades</div>
-      <h2 class="headline">Where conviction meets execution.</h2>
-      <p class="lede">From regime detection to sizing—follow the notes behind each move.</p>
-      <a class="btn" href="#">Go To Trades</a>
-    </article>
-    <aside class="card pad-md rail-wrap" data-rail="trades"></aside>
-  </section>
-
-  <!-- DEEP DIVE -->
-  <section id="deepdive" class="reveal">
+  <!-- Overview -->
+  <section id="overview" aria-label="Overview">
     <div class="grid-2">
-      <article class="card pad-md"><h3 class="h3">Gold</h3><canvas class="chart" id="gold"></canvas></article>
-      <article class="card pad-md"><h3 class="h3">US Dollar Index</h3><canvas class="chart" id="dxy"></canvas></article>
-    </div>
+      <article class="card pad">
+        <h3 class="h3">Current Systematic Portfolio Allocations</h3>
+        <div class="grid-2">
+          <div class="card pad" style="border:1px dashed var(--line)"><div class="tag" style="margin-bottom:6px">Crypto Portfolio</div><canvas class="chart" id="pie1"></canvas></div>
+          <div class="card pad" style="border:1px dashed var(--line)"><div class="tag" style="margin-bottom:6px">CORE4 Portfolio</div><canvas class="chart" id="pie2"></canvas></div>
+        </div>
+      </article>
 
-    <div class="grid-2 tight" style="margin-top:16px">
-      <article class="card pad-md">
-        <h3 class="h3">Positioning Signals Backtests: Crypto</h3>
-        <div class="grid-2 tight">
-          <canvas class="chart small-bars" id="bt_btc"></canvas>
-          <canvas class="chart small-bars" id="bt_eth"></canvas>
+      <article class="card pad">
+        <h3 class="h3">Current Signals</h3>
+        <div class="grid-2">
+          <div>
+            <div class="tag" style="margin-bottom:6px">Bitcoin Positioning</div>
+            <div class="meta">Latest Signal Change: Aug 18, 2025</div>
+            <div style="margin-top:10px"><span class="pill neutral">Neutral</span></div>
+            <hr class="rule">
+            <div class="tag" style="margin-bottom:6px">Market Regime</div>
+            <div class="meta">Latest Risk-on/Risk-off Change: May 2025</div>
+            <div style="margin-top:10px"><span class="pill positive">Risk-on Disinflation</span></div>
+          </div>
+          <div>
+            <div class="tag" style="margin-bottom:6px">Fear & Greed</div>
+            <canvas class="chart small" id="gauge"></canvas>
+            <div class="meta" id="gaugeLabel" style="text-align:center; margin-top:6px">Now: Greed (72)</div>
+          </div>
         </div>
-      </article>
-      <article class="card pad-md">
-        <h3 class="h3">Positioning Signals Backtests</h3>
-        <div class="grid-2 tight">
-          <canvas class="chart small-bars" id="bt_spx"></canvas>
-          <canvas class="chart small-bars" id="bt_bonds"></canvas>
-          <canvas class="chart small-bars" id="bt_gold"></canvas>
-          <canvas class="chart small-bars" id="bt_usd"></canvas>
-        </div>
-      </article>
-    </div>
-
-    <div class="grid-2" style="margin-top:16px">
-      <article class="card pad-md">
-        <h3 class="h3">Crypto Market Strength Index</h3>
-        <div class="grid-2 tight">
-          <canvas class="chart" id="cmsi_osc"></canvas>
-          <canvas class="chart" id="cmsi_btc"></canvas>
-        </div>
-      </article>
-      <article class="card pad-md">
-        <h3 class="h3">Economic Regime Model</h3>
-        <canvas class="chart" id="regime"></canvas>
       </article>
     </div>
 
-    <article class="card pad-md" style="margin-top:16px">
-      <h3 class="h3">Systematic Positioning Guide — Extended</h3>
-      <div class="table-wrap" style="max-height:420px">
-        <table class="table" aria-label="Extended Positioning Table">
-          <thead><tr><th>Asset</th><th>Signal</th><th>Position</th></tr></thead>
-          <tbody id="extendedRows"></tbody>
+    <article class="card pad" style="margin-top:16px">
+      <h3 class="h3">Systematic Positioning Guide</h3>
+      <div class="meta" style="margin-bottom:8px">Select Position Mode: <span class="badge gray">Long Only</span></div>
+      <div class="table-wrap" role="region" aria-label="Positioning Guide">
+        <table class="table">
+          <thead><tr><th>Asset</th><th>Signal</th><th>Position</th><th>Asset</th><th>Signal</th><th>Position</th></tr></thead>
+          <tbody>
+            <tr><td>Bitwise 10 Crypto Index Fund</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td><td>Bitcoin</td><td><span class="badge yellow">neutral</span></td><td><span class="badge gray">Long 50%</span></td></tr>
+            <tr><td>ETH/BTC</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td><td>XRP/BTC</td><td><span class="badge yellow">neutral</span></td><td><span class="badge gray">Long 50%</span></td></tr>
+            <tr><td>Solana</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td><td>Ethereum</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td></tr>
+            <tr><td>Cardano</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td><td>XRP</td><td><span class="badge yellow">neutral</span></td><td><span class="badge gray">Long 50%</span></td></tr>
+            <tr><td>Dogecoin</td><td><span class="badge yellow">neutral</span></td><td><span class="badge gray">Long 50%</span></td><td>SMH: Semiconductor ETF</td><td><span class="badge green">bullish</span></td><td><span class="badge green">Long 100%</span></td></tr>
+          </tbody>
         </table>
       </div>
     </article>
   </section>
+
+  <!-- Rails — NOW STACKED (always 1 column) -->
+  <section id="research">
+    <div class="grid-2 stacked" style="margin-top:16px">
+      <article class="card pad">
+        <h3 class="h3">Research & Insights</h3>
+        <p class="meta" style="margin:0 0 10px">Evidence-based notes and structured views across regimes, risk, and positioning.</p>
+        <div class="rail-wrap">
+          <button class="rail-btn left" aria-label="Scroll left" data-target="rail-research">‹</button>
+          <button class="rail-btn right" aria-label="Scroll right" data-target="rail-research">›</button>
+          <div class="rail" id="rail-research"></div>
+        </div>
+      </article>
+
+      <article class="card pad" id="education">
+        <h3 class="h3">Education</h3>
+        <p class="meta" style="margin:0 0 10px">Bite-sized modules on mechanics, risks, and strategies that matter.</p>
+        <div class="rail-wrap">
+          <button class="rail-btn left" aria-label="Scroll left" data-target="rail-learn">‹</button>
+          <button class="rail-btn right" aria-label="Scroll right" data-target="rail-learn">›</button>
+          <div class="rail" id="rail-learn"></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Deep Dive -->
+  <section id="deepdive">
+    <div class="grid-2">
+      <article class="card pad"><h3 class="h3">Gold</h3><canvas class="chart" id="gold"></canvas></article>
+      <article class="card pad"><h3 class="h3">US Dollar Index</h3><canvas class="chart" id="dxy"></canvas></article>
+    </div>
+    <div class="grid-2" style="margin-top:16px">
+      <article class="card pad">
+        <h3 class="h3">Crypto Market Strength Index</h3>
+        <div class="grid-2">
+          <canvas class="chart" id="cmsi_osc"></canvas>
+          <canvas class="chart" id="cmsi_btc"></canvas>
+        </div>
+      </article>
+      <article class="card pad"><h3 class="h3">Economic Regime Model</h3><canvas class="chart" id="regime"></canvas></article>
+    </div>
+  </section>
 </main>
 
-<footer class="container">© 2025 SHIFT — Institutional showcase variant for client review.</footer>
+<footer class="container">© 2025 SHIFT — A·B Showcase. All data illustrative.</footer>
 
-<!-- THEME STUDIO -->
+<!-- Theme Studio -->
 <button class="theme-fab" id="openStudio" title="Theme Studio" aria-label="Open Theme Studio">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8 3.5a8 8 0 0 0-.15-1.52l2.04-1.59-2-3.46-2.46.99a8.03 8.03 0 0 0-2.63-1.52L14.3 2h-4.6l-.5 2.9a8.03 8.03 0 0 0-2.63 1.52l-2.46-.99-2 3.46 2.04 1.59A8 8 0 0 0 4 12c0 .52.05 1.03.15 1.52L2.1 15.1l2 3.46 2.46-.99c.78.66 1.67 1.2 2.63 1.52l.5 2.9h4.6l.5-2.9c.96-.32 1.85-.86 2.63-1.52l2.46.99 2-3.46-2.04-1.59c.1-.49.15-1 .15-1.52Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8 3.5a8 8 0 0 0-.15-1.52l2.04-1.59-2-3.46-2.46.99a8.03 8.03 0 0 0-2.63-1.52L14.3 2h-4.6l-.5 2.9a8.03 8.03 0 0 0-2.63 1.52l-2.46-.99-2 3.46 2.04 1.59A8 8 0 0 0 4 12c0 .52.05 1.03.15 1.52L2.1 15.1l2 3.46 2.46-.99c.78.66 1.67 1.2 2.63 1.52l.5 2.9h4.6l.5-2.9c.96-.32 1.85-.86 2.63-1.52l2.46.99 2-3.46-2.04-1.59c.1-.49.15-1 .15-1.52Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </button>
 
 <aside class="theme-panel" id="studio" aria-label="Theme Studio">
   <h4>Theme Studio</h4>
   <div class="theme-row">
-    <div><label for="brandPick">Primary (Brand)</label><input type="color" id="brandPick" /></div>
-    <div><label for="accentPick">Accent</label><input type="color" id="accentPick" /></div>
+    <div><label for="brandPick">Primary (Brand)</label><input type="color" id="brandPick"></div>
+    <div><label for="accentPick">Accent</label><input type="color" id="accentPick"></div>
   </div>
   <div class="theme-row">
-    <div><label for="bgStartPick">Background Start</label><input type="color" id="bgStartPick" /></div>
-    <div><label for="bgEndPick">Background End</label><input type="color" id="bgEndPick" /></div>
+    <div><label for="bgStartPick">Background Start</label><input type="color" id="bgStartPick"></div>
+    <div><label for="bgEndPick">Background End</label><input type="color" id="bgEndPick"></div>
+  </div>
+  <div class="theme-actions" style="width:100%">
+    <div class="presets">
+      <span class="tbtn" style="pointer-events:none;border:0;font-weight:800;padding:0">Presets:</span>
+      <button class="preset" data-preset="shift">SHIFT Classic</button>
+      <button class="preset" data-preset="navy">Deep Navy</button>
+      <button class="preset" data-preset="charcoal">Charcoal</button>
+      <button class="preset" data-preset="emerald">Emerald</button>
+    </div>
+    <div class="switch" id="density">
+      <button data-mode="cozy" class="active" aria-pressed="true">Cozy</button>
+      <button data-mode="compact" aria-pressed="false">Compact</button>
+    </div>
   </div>
   <div class="theme-actions">
-    <button class="tbtn" id="copyVars">Copy</button>
-    <button class="tbtn" id="resetVars">Reset</button>
+    <div>
+      <button class="tbtn" id="copyVars">Copy</button>
+      <button class="tbtn" id="resetVars">Reset</button>
+    </div>
     <button class="tbtn save" id="saveVars">Save</button>
   </div>
 </aside>
 
 <script>
-/* ===================== Helpers ===================== */
-const $ = s => document.querySelector(s);
-const root = document.documentElement;
-function setVar(n,v){ root.style.setProperty(n,v); }
-function getVar(n){ return getComputedStyle(root).getPropertyValue(n).trim(); }
-function toHex(c){ const x=document.createElement('canvas').getContext('2d'); x.fillStyle=c; return x.fillStyle; }
-function mix(a,b,t=.5){ // tiny hex mixer
-  function h2r(h){h=h.replace('#',''); if(h.length===3) h=[...h].map(x=>x+x).join(''); const n=parseInt(h,16); return [(n>>16)&255,(n>>8)&255,n&255];}
-  function r2h([r,g,b]){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
-  const A=h2r(toHex(a)),B=h2r(toHex(b)); return r2h([0,1,2].map(i=>Math.round(A[i]*(1-t)+B[i]*t)));
-}
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const root=document.documentElement;
+function setVar(n,v){root.style.setProperty(n,v)}
+function getVar(n){return getComputedStyle(root).getPropertyValue(n).trim()}
+function toHex(c){const x=document.createElement('canvas').getContext('2d');x.fillStyle=c;return x.fillStyle}
+function mix(a,b,t=.5){function h2r(h){h=h.replace('#','');if(h.length===3)h=[...h].map(x=>x+x).join('');const n=parseInt(h,16);return[(n>>16)&255,(n>>8)&255,n&255]}function r2h([r,g,b]){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}const A=h2r(toHex(a)),B=h2r(toHex(b));return r2h([0,1,2].map(i=>Math.round(A[i]*(1-t)+B[i]*t)))}
 
-/* ===================== Charts use theme colors ===================== */
-function dpiCanvas(c){const dpr=window.devicePixelRatio||1;const r=c.getBoundingClientRect();c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return ctx;}
-function drawPie(canvas, segs){
-  const ctx=dpiCanvas(canvas); const {width,height}=canvas.getBoundingClientRect();
-  const r=Math.min(width,height)/2-8; const cx=width/2, cy=height/2; ctx.save(); ctx.translate(cx,cy);
-  let s=-Math.PI/2; segs.forEach(p=>{const e=s+(Math.PI*2)*(p.value/100);ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,r,s,e);ctx.closePath();ctx.fillStyle=p.color;ctx.fill();s=e;});
-  ctx.beginPath(); ctx.arc(0,0,r*0.65,0,Math.PI*2); ctx.globalCompositeOperation='destination-out'; ctx.fill(); ctx.restore();
-}
-function drawGauge(c,val){
-  const ctx=dpiCanvas(c); const {width,height}=c.getBoundingClientRect(); const cx=width/2, cy=height*0.9; const r=Math.min(width*0.45,height*0.9);
-  const red='#dc2626', amber='#f59e0b', green=getVar('--accent');
-  ctx.lineWidth=16; ctx.lineCap='round';
-  [[Math.PI,Math.PI*1.33,red],[Math.PI*1.33,Math.PI*1.66,amber],[Math.PI*1.66,Math.PI*2,green]].forEach(([a,b,col])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.arc(cx,cy,r,a,b);ctx.stroke();});
-  const ang=Math.PI+(Math.PI*(val/100)); ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang); ctx.strokeStyle='#0b1426'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(-6,0); ctx.lineTo(r-10,0); ctx.stroke(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(0,0,10,0,Math.PI*2); ctx.fill(); ctx.restore();
-}
-function drawHeatSeries(canvas,seed=1){
-  const ctx=dpiCanvas(canvas); const {width,height}=canvas.getBoundingClientRect(); const pad=14,w=width-pad*2,h=height-pad*2; ctx.save(); ctx.translate(pad,pad);
-  const cols=['#dc2626','#f59e0b',getVar('--accent'),getVar('--accent'),'#dc2626',getVar('--accent')];
-  let x=0; function rnd(){seed=(seed*9301+49297)%233280; return seed/233280;}
-  while(x<w){const bw=Math.max(10,40+Math.floor(rnd()*80)); ctx.fillStyle=cols[Math.floor(rnd()*cols.length)]; ctx.fillRect(x,0,bw,h); x+=bw;}
-  ctx.strokeStyle=getVar('--brand'); ctx.lineWidth=2; ctx.beginPath();
-  const steps=180; let y=h*0.6; for(let i=0;i<=steps;i++){const px=(i/steps)*w;const dy=Math.sin(i/8)+Math.cos(i/13)+Math.sin(i/5+seed); y=(h*0.55)-dy*18+(i/steps)*h*0.18; (i===0?ctx.moveTo:ctx.lineTo).call(ctx,px,y);}
-  ctx.stroke(); ctx.restore();
-}
-function drawBars(c,vals){
-  const ctx=dpiCanvas(c); const {width,height}=c.getBoundingClientRect(); const pad=18, cw=width-pad*2, ch=height-pad*2;
-  const max=Math.max(...vals.map(v=>Math.abs(v)))*1.2||1; const step=cw/vals.length;
-  const fills=[getVar('--accent'),'#f59e0b','#dc2626',getVar('--brand')];
-  ctx.save(); ctx.translate(pad,pad+ch/2); ctx.strokeStyle='rgba(15,23,42,.2)'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(cw,0); ctx.stroke();
-  vals.forEach((v,i)=>{const h=(v/max)*(ch/2); const x=i*step+step*0.15; const w=step*0.7; ctx.fillStyle=fills[i]; if(h>=0)ctx.fillRect(x,-h,w,h); else ctx.fillRect(x,0,w,-h);});
-  ctx.restore();
-}
-function drawOsc(c){
-  const ctx=dpiCanvas(c); const {width,height}=c.getBoundingClientRect(); const pad=14,w=width-pad*2,h=height-pad*2; ctx.save(); ctx.translate(pad,pad);
-  ctx.strokeStyle='rgba(15,23,42,.2)'; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
-  ctx.strokeStyle=getVar('--brand'); ctx.lineWidth=2; ctx.beginPath(); for(let i=0;i<=w;i++){const y=h*0.5-Math.sin(i/18)*h*0.45-Math.cos(i/47)*h*0.15; (i===0?ctx.moveTo:ctx.lineTo).call(ctx,i,y);} ctx.stroke(); ctx.restore();
-}
-function drawRegime(c){
-  const ctx=dpiCanvas(c); const {width,height}=c.getBoundingClientRect(); const pad=28,w=width-pad*2,h=height-pad*2; ctx.save(); ctx.translate(pad,pad);
-  ctx.strokeStyle='rgba(15,23,42,.2)'; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.moveTo(w/2,0); ctx.lineTo(w/2,h); ctx.stroke();
-  ctx.strokeStyle=getVar('--brand'); ctx.lineWidth=2; ctx.beginPath(); for(let t=0;t<=1;t+=0.02){const x=w*(0.5+0.35*Math.sin(t*Math.PI*2)*Math.exp(-t*0.2)); const y=h*(0.6-0.35*Math.cos(t*Math.PI*2)*Math.exp(-t*0.2)); (t===0?ctx.moveTo:ctx.lineTo).call(ctx,x,y);} ctx.stroke();
-  ctx.setLineDash([6,6]); ctx.strokeStyle=getVar('--accent'); ctx.beginPath(); ctx.moveTo(w*0.78,h*0.38); ctx.lineTo(w*0.85,h*0.45); ctx.lineTo(w*0.88,h*0.55); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
-}
+/* ---------- canvas ---------- */
+function dpiCanvas(c){const dpr=window.devicePixelRatio||1;const r=c.getBoundingClientRect();c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);return ctx}
+function drawPie(c,segs){const ctx=dpiCanvas(c);const {width,height}=c.getBoundingClientRect();const r=Math.min(width,height)/2-8,cx=width/2,cy=height/2;ctx.save();ctx.translate(cx,cy);let s=-Math.PI/2;segs.forEach(p=>{const e=s+(Math.PI*2)*(p.value/100);ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,r,s,e);ctx.closePath();ctx.fillStyle=p.color;ctx.fill();s=e;});ctx.beginPath();ctx.arc(0,0,r*0.68,0,Math.PI*2);ctx.globalCompositeOperation='destination-out';ctx.fill();ctx.restore()}
+function drawGauge(c,val){const ctx=dpiCanvas(c);const {width,height}=c.getBoundingClientRect();const cx=width/2,cy=height*0.95;const r=Math.min(width*0.46,height*0.95);const red='#dc2626',amber='#f59e0b',green=getVar('--accent');ctx.lineWidth=14;ctx.lineCap='round';[[Math.PI,Math.PI*1.33,red],[Math.PI*1.33,Math.PI*1.66,amber],[Math.PI*1.66,Math.PI*2,green]].forEach(([a,b,col])=>{ctx.beginPath();ctx.strokeStyle=col;ctx.arc(cx,cy,r,a,b);ctx.stroke()});const ang=Math.PI+(Math.PI*(val/100));ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);ctx.strokeStyle=getVar('--ink');ctx.lineWidth=3.5;ctx.beginPath();ctx.moveTo(-6,0);ctx.lineTo(r-10,0);ctx.stroke();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,9,0,Math.PI*2);ctx.fill();ctx.restore()}
+function drawHeatSeries(c,seed=1){const ctx=dpiCanvas(c);const {width,height}=c.getBoundingClientRect();const pad=12,w=width-pad*2,h=height-pad*2;ctx.save();ctx.translate(pad,pad);const cols=['#dc2626','#f59e0b',getVar('--accent'),getVar('--accent'),'#dc2626',getVar('--accent')];let x=0;function rnd(){seed=(seed*9301+49297)%233280;return seed/233280}while(x<w){const bw=Math.max(10,40+Math.floor(rnd()*80));ctx.fillStyle=cols[Math.floor(rnd()*cols.length)];ctx.fillRect(x,0,bw,h);x+=bw}ctx.strokeStyle=getVar('--brand');ctx.lineWidth=2;ctx.beginPath();const steps=180;let y=h*0.6;for(let i=0;i<=steps;i++){const px=(i/steps)*w;const dy=Math.sin(i/8)+Math.cos(i/13)+Math.sin(i/5+seed);y=(h*0.55)-dy*18+(i/steps)*h*0.18;(i===0?ctx.moveTo:ctx.lineTo).call(ctx,px,y)}ctx.stroke();ctx.restore()}
+function drawOsc(c){const ctx=dpiCanvas(c);const {width,height}=c.getBoundingClientRect();const pad=12,w=width-pad*2,h=height-pad*2;ctx.save();ctx.translate(pad,pad);ctx.strokeStyle='rgba(15,23,42,.18)';ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();ctx.strokeStyle=getVar('--brand');ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=w;i++){const y=h*0.5-Math.sin(i/18)*h*0.45-Math.cos(i/47)*h*0.15;(i===0?ctx.moveTo:ctx.lineTo).call(ctx,i,y)}ctx.stroke();ctx.restore()}
+function drawRegime(c){const ctx=dpiCanvas(c);const {width,height}=c.getBoundingClientRect();const pad=26,w=width-pad*2,h=height-pad*2;ctx.save();ctx.translate(pad,pad);ctx.strokeStyle='rgba(15,23,42,.18)';ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.stroke();ctx.strokeStyle=getVar('--brand');ctx.lineWidth=2;ctx.beginPath();for(let t=0;t<=1;t+=0.02){const x=w*(0.5+0.35*Math.sin(t*Math.PI*2)*Math.exp(-t*0.2));const y=h*(0.6-0.35*Math.cos(t*Math.PI*2)*Math.exp(-t*0.2));(t===0?ctx.moveTo:ctx.lineTo).call(ctx,x,y)}ctx.stroke();ctx.setLineDash([6,6]);ctx.strokeStyle=getVar('--accent');ctx.beginPath();ctx.moveTo(w*0.78,h*0.38);ctx.lineTo(w*0.85,h*0.45);ctx.lineTo(w*0.88,h*0.55);ctx.stroke();ctx.setLineDash([]);ctx.restore()}
 
-/* Data from original */
-const PIE1 = ()=>[
-  {label:'Cash', value:30, color:mix(getVar('--brand'),'#ffffff',0.6)},
-  {label:'Bitcoin', value:20, color:getVar('--brand')},
-  {label:'Altcoins', value:50, color:getVar('--accent')}
-];
-const PIE2 = ()=>[
-  {label:'Stocks', value:60, color:getVar('--brand')},
-  {label:'Gold', value:30, color:mix(getVar('--brand'),getVar('--accent'),0.35)},
-  {label:'Cash', value:5, color:'#f59e0b'},
-  {label:'Bitcoin', value:5, color:getVar('--accent')}
-];
+/* ---------- render ---------- */
+const PIE1=()=>[{label:'Cash',value:30,color:mix(getVar('--brand'),'#ffffff',0.6)},{label:'Bitcoin',value:20,color:getVar('--brand')},{label:'Altcoins',value:50,color:getVar('--accent')}];
+const PIE2=()=>[{label:'Stocks',value:60,color:getVar('--brand')},{label:'Gold',value:30,color:mix(getVar('--brand'),getVar('--accent'),0.35)},{label:'Cash',value:5,color:'#f59e0b'},{label:'Bitcoin',value:5,color:getVar('--accent')}];
 
-function renderAll(){
-  drawPie($('#pie1'), PIE1());
-  drawPie($('#pie2'), PIE2());
-  drawGauge($('#gauge'), 72);
-  drawHeatSeries($('#gold'), 7);
-  drawHeatSeries($('#dxy'), 13);
-  drawBars($('#bt_btc'), [749,29,-232,544]);
-  drawBars($('#bt_eth'), [331,121,-354,98]);
-  drawBars($('#bt_spx'), [186,-11,-39,135]);
-  drawBars($('#bt_bonds'), [57,10,-64,3]);
-  drawBars($('#bt_gold'), [120,32,-30,122]);
-  drawBars($('#bt_usd'), [72,-15,-53,3]);
-  drawOsc($('#cmsi_osc'));
-  drawHeatSeries($('#cmsi_btc'), 21);
-  drawRegime($('#regime'));
-}
-window.addEventListener('resize', ()=>{clearTimeout(window._rt); window._rt=setTimeout(renderAll,120);});
-window.addEventListener('load', renderAll);
+function renderAll(){drawPie($('#pie1'),PIE1());drawPie($('#pie2'),PIE2());drawGauge($('#gauge'),72);drawHeatSeries($('#gold'),7);drawHeatSeries($('#dxy'),13);drawOsc($('#cmsi_osc'));drawHeatSeries($('#cmsi_btc'),21);drawRegime($('#regime'))}
+let _rt; const rerender=()=>{clearTimeout(_rt); _rt=setTimeout(renderAll,120)}
+window.addEventListener('resize',rerender); window.addEventListener('load',renderAll);
 
-/* Rails data */
-const DATA = {
-  research: [
-    { title:"Macro Update: Do markets still have room to run?", date:"July 1, 2025", icon:"chart" },
-    { title:"The two most likely scenarios for economy & markets", date:"March 14, 2025", icon:"bars" },
-    { title:"Hyperfluid: The emerging DeFi chain", date:"February 2025", icon:"bridge" },
-    { title:"Bitcoin positioning: Risk-on disinflation", date:"May 2025", icon:"gauge" }
-  ],
-  learn: [
-    { title:"AI × Crypto: where the biggest innovations converge", date:"June 9, 2024", icon:"ai" },
-    { title:"Intents: The next breakthrough in crypto", date:"April 28, 2024", icon:"intent" },
-    { title:"How to program payment channels", date:"December 20, 2023", icon:"channels" },
-    { title:"Wallet security, done right", date:"October 2023", icon:"shield" }
-  ],
-  trades: [
-    { title:"This could be one of the leading projects in DeFi", date:"Jan 18, 2024", icon:"candles" },
-    { title:"We're trading the dip on AKT again", date:"Nov 30, 2023", icon:"trend" },
-    { title:"Rotation into higher beta alts", date:"Aug 2023", icon:"rotate" },
-    { title:"Core4 portfolio rebalance notes", date:"Jun 2023", icon:"pie" }
-  ]
-};
-function iconSVG(name){const s="#fff";const svg=c=>`<svg viewBox="0 0 24 24" fill="none">${c}</svg>`;switch(name){
-  case'chart':return svg(`<path d="M4 18h16M7 15V9m5 6v-9m5 9v-6" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'bars':return svg(`<path d="M4 8h16M4 12h16M4 16h16" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'bridge':return svg(`<path d="M3 14h18M5 14V9m14 5V9M8 14V7m8 7V7" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'gauge':return svg(`<path d="M4 14a8 8 0 0 1 16 0" stroke="${s}" stroke-width="2"/><path d="M12 14l4-4" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'ai':return svg(`<rect x="5" y="5" width="14" height="14" rx="3" stroke="${s}" stroke-width="2"/><text x="12" y="15" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Inter, system-ui">AI</text>`);
-  case'intent':return svg(`<path d="M6 12h12M6 8h10M6 16h8" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'channels':return svg(`<path d="M7 7h4v4H7V7Zm6 6h4v4h-4v-4Z" stroke="${s}" stroke-width="2"/><path d="M11 9l6 6" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'shield':return svg(`<path d="M12 3l7 3v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3Z" stroke="${s}" stroke-width="2" fill="none"/>`);
-  case'candles':return svg(`<path d="M7 8v8M12 6v12M17 10v8" stroke="${s}" stroke-width="2" stroke-linecap="round"/><path d="M5 10h4M10 8h4M15 12h4" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'trend':return svg(`<path d="M4 16l5-5 3 3 6-6" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`);
-  case'rotate':return svg(`<path d="M7 7h10v10H7z" stroke="${s}" stroke-width="2"/><path d="M10 7v-2m4 14v-2m4-4h2M4 12h2" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
-  case'pie':return svg(`<path d="M12 4a8 8 0 1 0 8 8h-8V4Z" stroke="${s}" stroke-width="2" fill="none"/><path d="M12 4v8h8" stroke="${s}" stroke-width="2"/>`);
-  default:return svg(`<circle cx="12" cy="12" r="5" stroke="${s}" stroke-width="2"/>`);
-}}
-for (const [key, list] of Object.entries(DATA)) {
-  const wrap = document.querySelector(`[data-rail="${key}"]`);
-  const rail = document.createElement('div'); rail.className='rail'; rail.setAttribute('role','region'); rail.setAttribute('aria-label', key+' items');
-  list.forEach(item=>{
-    const el=document.createElement('article'); el.className='mini';
-    el.innerHTML=`<div class="thumb">${iconSVG(item.icon)}</div><div class="copy"><h4>${item.title}</h4><div class="meta"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="4" width="18" height="17" rx="4" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8 2v4M16 2v4M3 9h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>${item.date}</span></div></div>`;
-    rail.appendChild(el);
-  });
-  wrap.append(rail);
-}
+/* ---------- rails ---------- */
+const R=[{t:"Macro Update: Do markets still have room to run?",d:"July 1, 2025"},{t:"Two most likely scenarios for economy & markets",d:"March 14, 2025"},{t:"Hyperfluid: The emerging DeFi chain",d:"February 2025"},{t:"Bitcoin positioning: Risk-on disinflation",d:"May 2025"}];
+const L=[{t:"AI × Crypto: where innovations converge",d:"June 9, 2024"},{t:"Intents: The next breakthrough",d:"April 28, 2024"},{t:"Programming payment channels",d:"December 20, 2023"},{t:"Wallet security, done right",d:"October 2023"}];
+function miniCard({t,d}){const el=document.createElement('article');el.className='mini';el.innerHTML=`<div class="th">●</div><div class="cp"><h4>${t}</h4><div class="meta">📅 ${d}</div></div>`;return el}
+const rr=$("#rail-research"), rl=$("#rail-learn"); R.forEach(x=>rr.append(miniCard(x))); L.forEach(x=>rl.append(miniCard(x)));
+function setupRail(id){const rail=document.getElementById(id);const left=document.querySelector(`.rail-btn.left[data-target="${id}"]`);const right=document.querySelector(`.rail-btn.right[data-target="${id}"]`);const step=()=>Math.max(240,Math.min(rail.clientWidth*0.85,600));const check=()=>{const tol=2;left.disabled=rail.scrollLeft<=tol;right.disabled=rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-tol};left.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));right.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));rail.addEventListener('scroll',check,{passive:true});window.addEventListener('resize',check);requestAnimationFrame(check)}
+setupRail('rail-research'); setupRail('rail-learn');
 
-/* Extended table rows (as before) */
-const EXTENDED=['Avalanche','Gold','S&P 500','Russell 2000','Japanese Equities','MTUM: Momentum Factor','Dogecoin','GDX – Gold Miners','Nasdaq','Chinese Equities','European Equities','SMH: Semiconductor ETF','US Dollar Index','US Treasuries 10y','Oil','Silver','USDJPY','EURUSD','AAPL','NVDA'];
-const tbody=document.getElementById('extendedRows');
-EXTENDED.forEach((name,i)=>{const tr=document.createElement('tr'); tr.innerHTML=`<td>${name}</td><td><span class="badge ${i%5===1?'yellow':'green'}">${i%5===1?'neutral':'bullish'}</span></td><td><span class="badge ${i%5===1?'gray':'green'}">${i%5===1?'Long 50%':'Long 100%'}</span></td>`; tbody.appendChild(tr);});
-
-/* Theme Studio */
+/* ---------- Theme Studio + presets + density ---------- */
 const studio=$('#studio'); $('#openStudio').addEventListener('click',()=>studio.classList.toggle('open'));
 const inputs={brand:$('#brandPick'),accent:$('#accentPick'),bgStart:$('#bgStartPick'),bgEnd:$('#bgEndPick')};
-function syncInputs(){inputs.brand.value=toHex(getVar('--brand'));inputs.accent.value=toHex(getVar('--accent'));inputs.bgStart.value=toHex(getVar('--bg-start'));inputs.bgEnd.value=toHex(getVar('--bg-end'));}
-function applyTheme(t){if(t.brand)setVar('--brand',t.brand);if(t.accent)setVar('--accent',t.accent);if(t.bgStart)setVar('--bg-start',t.bgStart);if(t.bgEnd)setVar('--bg-end',t.bgEnd); renderAll();}
-Object.values(inputs).forEach(i=>i.addEventListener('input',()=>applyTheme({brand:inputs.brand.value,accent:inputs.accent.value,bgStart:inputs.bgStart.value,bgEnd:inputs.bgEnd.value})));
-$('#saveVars').addEventListener('click',()=>{const t={brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end')};localStorage.setItem('shift_theme_institutional',JSON.stringify(t));alert('Theme saved ✅');});
-$('#resetVars').addEventListener('click',()=>{applyTheme({brand:'#0b3b6e',accent:'#0f766e',bgStart:'#f6f8fb',bgEnd:'#edf2f7'});localStorage.removeItem('shift_theme_institutional');syncInputs();});
-$('#copyVars').addEventListener('click',()=>{const json=JSON.stringify({brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end')},null,2);navigator.clipboard.writeText(json).then(()=>alert('Theme copied 📋'));});
-const saved=localStorage.getItem('shift_theme_institutional'); if(saved){try{applyTheme(JSON.parse(saved));}catch{}}
+function setTheme(t){if(t.brand)setVar('--brand',t.brand);if(t.accent)setVar('--accent',t.accent);if(t.bgStart)setVar('--bg-start',t.bgStart);if(t.bgEnd)setVar('--bg-end',t.bgEnd);renderAll()}
+function syncInputs(){inputs.brand.value=toHex(getVar('--brand'));inputs.accent.value=toHex(getVar('--accent'));inputs.bgStart.value=toHex(getVar('--bg-start'));inputs.bgEnd.value=toHex(getVar('--bg-end'))}
+Object.values(inputs).forEach(i=>i.addEventListener('input',()=>setTheme({brand:inputs.brand.value,accent:inputs.accent.value,bStart:inputs.bgStart?.value,bEnd:inputs.bgEnd?.value})));
+const PRESETS={shift:{brand:'#0b3b6e',accent:'#0f766e',bgStart:'#f6f8fb',bgEnd:'#edf2f7'},navy:{brand:'#0a2540',accent:'#1f7a8c',bgStart:'#f3f6fb',bgEnd:'#e9eef6'},charcoal:{brand:'#1f2937',accent:'#3f8c6d',bgStart:'#f7f7f8',bgEnd:'#eceff3'},emerald:{brand:'#064e3b',accent:'#10b981',bgStart:'#f4fbf8',bgEnd:'#ebf7f3'}};
+document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{setTheme(PRESETS[b.dataset.preset]);b.animate([{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{duration:220,easing:'ease-out'})}));
+const density=$('#density'); density.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')return;const m=e.target.dataset.mode;document.body.setAttribute('data-density',m==='compact'?'compact':'cozy');density.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.mode===m));density.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x.classList.contains('active')));renderAll()});
+$('#saveVars').addEventListener('click',()=>{const t={brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end'),density:document.body.getAttribute('data-density')||'cozy',skin:document.body.getAttribute('data-skin')||'institutional'};localStorage.setItem('shift_ab_theme',JSON.stringify(t));alert('Theme saved ✅')});
+$('#resetVars').addEventListener('click',()=>{setTheme(PRESETS.shift);document.body.setAttribute('data-density','cozy');document.body.setAttribute('data-skin','institutional');localStorage.removeItem('shift_ab_theme');syncInputs();renderAll()});
+$('#copyVars').addEventListener('click',()=>{const json=JSON.stringify({brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end'),density:document.body.getAttribute('data-density')||'cozy',skin:document.body.getAttribute('data-skin')||'institutional'},null,2);navigator.clipboard.writeText(json).then(()=>alert('Theme copied 📋'))});
+const saved=localStorage.getItem('shift_ab_theme'); if(saved){try{const t=JSON.parse(saved);setTheme(t);document.body.setAttribute('data-density',t.density||'cozy');document.body.setAttribute('data-skin',t.skin||'institutional');}catch{}}
 syncInputs();
 
-/* Mobile nav */
-const nav=document.getElementById('nav'); document.getElementById('burger').addEventListener('click',()=>nav.classList.toggle('open'));
-
-/* Reveal on scroll */
-const io=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('is-in')),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+/* ---------- A/B switcher ---------- */
+const btnInst=$('#btnInstitutional'), btnMod=$('#btnModern');
+function setSkin(s){document.body.setAttribute('data-skin',s);btnInst.classList.toggle('active',s==='institutional');btnMod.classList.toggle('active',s==='modern');renderAll()}
+btnInst.addEventListener('click',()=>setSkin('institutional'));
+btnMod.addEventListener('click',()=>setSkin('modern'));
 </script>
 </body>
 </html>
