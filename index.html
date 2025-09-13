@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SHIFT — Showcase (with Theme Studio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ================= TOKENS (same visuals as before) ================= */
+:root{
+  --ink:#0f172a; --ink-2:#334155; --ink-3:#64748b;
+  --brand:#1f4ed8;            /* you can change with Theme Studio */
+  --accent:#16a34a;           /* you can change with Theme Studio */
+  --bg-start:#eef3f7;         /* you can change with Theme Studio */
+  --bg-end:#ffe8dc;           /* you can change with Theme Studio */
+  --card:255,255,255; --shadow:15,23,42;
+  --r-xl:22px; --r-lg:18px;
+}
+
+/* ================ BASE ================ */
+*,:before,:after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;overflow-x:hidden;background:#eef3f7}
+
+/* ONE LONG FIXED GRADIENT (unchanged layout; now uses vars) */
+.bg{position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(140deg,var(--bg-start) 0%, var(--bg-start) 30%, var(--bg-end) 65%, var(--bg-end) 100%);
+  background-size:100% 100%; background-repeat:no-repeat; background-attachment:fixed;
+}
+.bg::before{content:""; position:absolute; inset:0;
+  background:radial-gradient(60vh 60vh at 12% 8%, rgba(59,130,246,.18), rgba(59,130,246,0) 60%);
+}
+.bg::after{content:""; position:absolute; inset:0;
+  background:radial-gradient(70vh 70vh at 96% 92%, rgba(251,146,60,.20), rgba(251,146,60,0) 65%);
+}
+
+.container{ width:min(1200px,92vw); margin-inline:auto; }
+section{ padding:clamp(24px,3.6vw,46px) 0; }
+
+/* ================ NAV (as before) ================ */
+.nav{position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(14px);
+  background:rgba(var(--card),.65); border-bottom:1px solid rgba(255,255,255,.65);
+  box-shadow:0 10px 30px rgba(var(--shadow),.06);
+}
+.nav-inner{ display:flex; align-items:center; gap:24px; padding:12px 8px; }
+.logo{ font:800 clamp(18px,2.2vw,24px) Sora, Inter; letter-spacing:.4px; padding:2px 12px; }
+.nav-links{ display:flex; gap:14px; margin-left:8px; flex:1 1 auto; }
+.nav-links a{
+  text-decoration:none; color:var(--ink-2); font-weight:700;
+  padding:10px 12px; border-radius:12px;
+}
+.nav-links a:hover{ background:rgba(15,23,42,.05); color:var(--ink); }
+.cta{
+  background:var(--brand); color:#fff; font-weight:800; text-decoration:none;
+  padding:12px 14px; border-radius:14px; letter-spacing:.2px;
+  box-shadow:0 10px 20px rgba(31,78,216,.25);
+}
+.burger{
+  display:none; width:42px; height:42px; place-items:center;
+  border-radius:12px; border:1px solid rgba(255,255,255,.8);
+  background:rgba(var(--card),.95); cursor:pointer;
+}
+.burger span,.burger::before,.burger::after{
+  content:""; display:block; width:18px; height:2px; background:#0f172a; border-radius:2px;
+}
+.burger span{ margin:4px 0; }
+@media (max-width: 860px){
+  .nav-links{ display:none; position:absolute; left:0; right:0; top:100%;
+    background:rgba(var(--card),.95); padding:8px; border-bottom:1px solid rgba(255,255,255,.7); }
+  .nav.open .nav-links{ display:flex; flex-direction:column; gap:6px; }
+  .burger{ display:grid; }
+}
+
+/* ============== PROMO BANNERS (unchanged) ============== */
+.promo-grid{ display:grid; gap:18px; grid-template-columns: 1.1fr 1fr; }
+@media (max-width: 1000px){ .promo-grid{ grid-template-columns:1fr; } }
+.promo{
+  position:relative; overflow:hidden; border-radius:var(--r-xl);
+  background:rgba(var(--card),.72); border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 18px 48px rgba(var(--shadow),.08), inset 0 1px 0 rgba(255,255,255,.9);
+  display:grid; grid-template-columns:1.15fr .85fr; align-items:center;
+}
+.promo.tight{ grid-template-columns:1fr 1fr; }
+@media (max-width: 700px){ .promo{ grid-template-columns:1fr; } }
+.promo .copy{ padding: clamp(18px,2.6vw,26px); }
+.kicker{ font-weight:800; letter-spacing:.06em; color:var(--ink-2); }
+.title{ font:800 clamp(22px,3vw,30px)/1.15 Inter; margin:.25rem 0 .5rem; letter-spacing:-.02em; }
+.p{ color:var(--ink-3); margin:0 0 1rem; max-width: 46ch; }
+.promo .cta-row{ display:flex; flex-wrap:wrap; gap:12px; }
+.btn{
+  display:inline-flex; align-items:center; gap:.6ch;
+  padding:12px 16px; border-radius:14px; font-weight:800;
+  text-decoration:none; color:#0b1a2a; background:#e8eef8;
+  box-shadow:0 8px 18px rgba(15,23,42,.10), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.btn:hover{ transform:translateY(-1px); }
+.btn.primary{ background:var(--brand); color:#fff; box-shadow:0 10px 22px rgba(31,78,216,.28); }
+.btn.accent{ background:var(--accent); color:#fff; box-shadow:0 10px 22px rgba(22,163,74,.28); }
+.promo .media{
+  position:relative; min-height:180px; height:100%; display:grid; place-items:center;
+  border-left:1px solid rgba(255,255,255,.75);
+  background:
+    radial-gradient(800px 220px at 70% 10%, rgba(59,130,246,.22), transparent 60%),
+    linear-gradient(135deg,#0f1a2a 0%, #241d49 55%, #0a2940 100%);
+}
+.promo .media::after{ content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0) 40%); }
+
+/* ============ OVERVIEW WIDGETS (unchanged) ============ */
+.widgets{ display:grid; gap:18px; }
+.widgets-row{ display:grid; gap:18px; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1100px){ .widgets-row{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 720px){ .widgets-row{ grid-template-columns: 1fr; } }
+.card{
+  position:relative; background:rgba(var(--card),.68);
+  border:1px solid rgba(255,255,255,.75); border-radius:var(--r-xl);
+  box-shadow:0 20px 50px rgba(var(--shadow), .08), inset 0 1px 0 rgba(255,255,255,.9);
+  overflow:hidden;
+}
+.pad-lg{ padding:clamp(18px,2.6vw,26px); }
+.pad-md{ padding:clamp(14px,2vw,20px); }
+.h3{ font:800 22px/1.2 Inter; margin:0 0 10px; letter-spacing:-.02em; }
+.meta-line{ color:var(--ink-3); font-size:.92rem; }
+.thumb-rect{
+  height:140px; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#121629,#231b45 55%,#0a2640 100%); margin: 8px 0 12px;
+}
+.rule{ border:0; border-top:1px solid rgba(15,23,42,.08); margin:14px 0; }
+.pill{ display:inline-flex; align-items:center; justify-content:center;
+  padding:10px 14px; border-radius:999px; font-weight:800; font-size:.95rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+.pill.neutral{ background:#fde68a; color:#92400e; }
+.pill.positive{ background:#86efac; color:#065f46; }
+.table-wrap{ border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.7);
+  background:rgba(var(--card),.9); max-height:340px; overflow:auto; }
+.table{ width:100%; border-collapse:collapse; }
+.table th,.table td{ padding:12px 14px; border-bottom:1px solid rgba(15,23,42,.06); text-align:left; }
+.table th{ font-weight:800; color:var(--ink-2); background:rgba(15,23,42,.03); }
+.badge{ display:inline-block; padding:6px 10px; border-radius:999px; font-weight:800; font-size:.85rem; }
+.badge.green{ background:#22c55e; color:#fff; }
+.badge.yellow{ background:#fbbf24; color:#1f2937; }
+.badge.gray{ background:#e5e7eb; color:#111827; }
+
+/* charts */
+.chart{ width:100%; height:240px; display:block; }
+
+/* ============ TEXT SECTIONS (unchanged) ============ */
+.panel{ display:grid; gap:24px; grid-template-columns:1.05fr 1.3fr; }
+@media (max-width: 980px){ .panel{ grid-template-columns:1fr; } }
+.eyebrow{ font-weight:800; color:var(--ink-2); letter-spacing:.06em; }
+.headline{ font:800 clamp(26px,3.6vw,40px)/1.08 Inter; letter-spacing:-.02em; margin:6px 0 12px; }
+.lede{ color:var(--ink-3); max-width:48ch; margin:0 0 18px; }
+.rail-wrap{ position:relative; height:100%; }
+.rail{
+  display:grid; grid-auto-flow:column; grid-auto-columns:minmax(260px,1fr);
+  gap:18px; overflow-x:auto; overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory; padding:18px 16px 22px; scrollbar-width:thin;
+}
+@media (max-width:700px){ .rail{ grid-auto-columns:minmax(78%,1fr); } }
+.rail::-webkit-scrollbar{ height:10px }
+.rail::-webkit-scrollbar-thumb{ background:linear-gradient(90deg,#cbd5e1,#94a3b8); border-radius:20px; }
+.rail-mask{ pointer-events:none; position:absolute; inset:0; background:
+  linear-gradient(90deg,rgba(255,255,255,1),transparent 120px) left,
+  linear-gradient(-90deg,rgba(255,255,255,1),transparent 120px) right;
+  background-repeat:no-repeat; border-radius:inherit; opacity:.9;
+}
+.mini{
+  background:rgba(var(--card),.92);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:var(--r-lg);
+  box-shadow:0 10px 30px rgba(var(--shadow),.07), inset 0 1px 0 rgba(255,255,255,.9);
+  scroll-snap-align:start;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.mini:hover{ transform:translateY(-4px); box-shadow:0 18px 38px rgba(var(--shadow),.1); }
+.mini .thumb{
+  height:120px; border-bottom:1px solid rgba(255,255,255,.75);
+  display:flex; align-items:center; justify-content:center; color:#fff;
+  background:
+    radial-gradient(600px 180px at 70% 10%, rgba(59,130,246,.25), transparent 60%),
+    linear-gradient(135deg,#151a2b 0%, #251f4a 55%, #0b2a3f 100%);
+}
+.thumb svg{ width:72px; height:72px; opacity:.9; }
+.mini .copy{ padding:14px 16px 12px; }
+.mini h4{ font:800 16px/1.22 Inter; margin:0 0 8px; color:var(--ink); }
+.meta{ display:flex; align-items:center; gap:8px; color:var(--ink-3); font-size:.92rem; }
+.meta svg{ width:16px; height:16px; opacity:.75; }
+.rail-btn{
+  position:absolute; top:50%; translate:0 -50%;
+  width:42px; aspect-ratio:1; display:grid; place-items:center;
+  border-radius:999px; border:1px solid rgba(255,255,255,.9);
+  background:rgba(var(--card),.95); box-shadow:0 10px 22px rgba(var(--shadow),.10), inset 0 1px 0 rgba(255,255,255,.9);
+  cursor:pointer; z-index:2; transition:transform .2s, box-shadow .2s, opacity .2s;
+}
+.rail-btn:hover{ transform:translateY(-1px); box-shadow:0 16px 28px rgba(var(--shadow),.14); }
+.rail-btn.left{ left:8px } .rail-btn.right{ right:8px }
+.rail-btn svg{ width:20px; height:20px; }
+
+/* ============ DEEP DIVE (unchanged) ============ */
+.grid-2{display:grid;gap:18px;grid-template-columns:1fr 1fr}
+@media (max-width:900px){.grid-2{grid-template-columns:1fr}}
+.grid-2.tight .chart{height:220px}
+.grid-3{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+@media (max-width:1100px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:720px){.grid-3{grid-template-columns:1fr}}
+.small-bars{height:180px}
+
+/* Reveal + footer + focus (unchanged) */
+.reveal{ opacity:0; transform:translateY(18px); }
+.reveal.is-in{ opacity:1; transform:none; transition:all .65s cubic-bezier(.2,.7,0,.9); }
+footer{ color:var(--ink-3); padding:46px 0 60px; text-align:center; }
+:focus-visible{ outline:3px solid rgba(31,78,216,.55); outline-offset:2px; border-radius:14px; }
+
+/* ============ Theme Studio button/panel (NEW) ============ */
+.theme-fab{
+  position:fixed; right:18px; bottom:18px; z-index:60;
+  width:56px; height:56px; border-radius:16px; border:1px solid rgba(255,255,255,.8);
+  background:var(--brand); color:#fff; display:grid; place-items:center;
+  box-shadow:0 18px 40px rgba(31,78,216,.25); cursor:pointer;
+}
+.theme-panel{
+  position:fixed; right:18px; bottom:86px; width:min(360px,92vw);
+  background:rgba(var(--card),.96); border:1px solid rgba(255,255,255,.9); border-radius:18px;
+  box-shadow:0 24px 70px rgba(15,23,42,.2), inset 0 1px 0 rgba(255,255,255,.9);
+  padding:16px; z-index:60; display:none;
+}
+.theme-panel.open{display:block}
+.theme-panel h4{margin:0 0 10px; font:800 16px Inter}
+.theme-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px}
+.theme-row label{font:700 12px Inter; color:var(--ink-2)}
+.theme-row input[type="color"]{width:100%; height:42px; border-radius:10px; border:1px solid rgba(0,0,0,.08); background:#fff}
+.theme-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:8px}
+.tbtn{padding:10px 12px; border-radius:10px; border:1px solid rgba(0,0,0,.1); background:#fff; font:700 12px Inter; cursor:pointer}
+.tbtn.save{background:var(--brand); color:#fff; border:none}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <div class="logo">SHIFT</div>
+    <button class="burger" id="burger" aria-label="Toggle menu"><span></span></button>
+    <div class="nav-links" id="links">
+      <a href="#promos">Dashboard</a>
+      <a href="#widgets">Overview</a>
+      <a href="#research">Research</a>
+      <a href="#learn">Education</a>
+      <a href="#trades">Trades</a>
+      <a href="#deepdive">Deep Dive</a>
+    </div>
+    <a class="cta" href="#">Join for Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <!-- ========== PROMO BANNERS (unchanged) ========== -->
+  <section id="promos" class="reveal">
+    <div class="promo-grid">
+      <article class="promo">
+        <div class="copy">
+          <div class="kicker">Systematic Tools & Process</div>
+          <h2 class="title">Overview of the TSR framework</h2>
+          <p class="p">A quick tour through our methodology: market regime, positioning signals, and portfolio construction.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#">Watch Video</a>
+            <a class="btn" href="#">View the PDF</a>
+          </div>
+        </div>
+        <div class="media" aria-hidden="true">
+          <svg viewBox="0 0 600 260" fill="none">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+            <rect x="16" y="24" width="160" height="10" rx="5" fill="#8b5cf6" opacity=".5"/>
+            <rect x="16" y="48" width="110" height="10" rx="5" fill="#22d3ee" opacity=".55"/>
+            <rect x="16" y="72" width="140" height="10" rx="5" fill="#f472b6" opacity=".6"/>
+            <polyline points="200,200 260,140 310,160 360,110 420,140 480,90 540,120"
+              stroke="url(#g1)" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="480" cy="90" r="6" fill="#22d3ee"/>
+          </svg>
+        </div>
+      </article>
+
+      <article class="promo tight">
+        <div class="copy">
+          <div class="kicker">Community Updates</div>
+          <h2 class="title">Join the Telegram Channel</h2>
+          <p class="p">Short notes, intra-week updates, and AMA sessions with the team and members.</p>
+          <div class="cta-row">
+            <a class="btn accent" href="#">Join Our Telegram</a>
+            <a class="btn" href="#">Read Guidelines</a>
+          </div>
+        </div>
+        <div class="media" aria-hidden="true">
+          <svg viewBox="0 0 600 260" fill="none">
+            <rect x="60" y="46" width="220" height="90" rx="16" fill="#1f2937" opacity=".6" stroke="#60a5fa" stroke-width="2"/>
+            <circle cx="120" cy="90" r="12" fill="#60a5fa"/><rect x="142" y="78" width="110" height="24" rx="6" fill="#60a5fa"/>
+            <rect x="320" y="120" width="220" height="90" rx="16" fill="#064e3b" opacity=".6" stroke="#34d399" stroke-width="2"/>
+            <circle cx="380" cy="164" r="12" fill="#34d399"/><rect x="402" y="152" width="110" height="24" rx="6" fill="#34d399"/>
+          </svg>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== OVERVIEW WIDGETS (unchanged) ========== -->
+  <section id="widgets" class="widgets reveal">
+    <div class="widgets-row">
+      <article class="card pad-md">
+        <h3 class="h3">Latest Publication</h3>
+        <div class="thumb-rect"></div>
+        <div class="meta-line"><strong>Macro Update:</strong> Do markets still have room to run?</div>
+        <div class="meta-line">📅 July 1, 2025 · Market Updates, Research & Insights</div>
+      </article>
+
+      <article class="card pad-md">
+        <h3 class="h3">Current Bitcoin Positioning Signal</h3>
+        <div class="meta-line">Latest Signal Change: August 18th 2025</div>
+        <div style="margin:12px 0 6px;"><span class="pill neutral">Neutral</span></div>
+        <hr class="rule" />
+        <h3 class="h3" style="margin-top:6px;">Current Market Regime</h3>
+        <div class="meta-line">Latest Risk-on/Risk-off Change: May 2025</div>
+        <div style="margin:12px 0;"><span class="pill positive">Risk-on Disinflation</span></div>
+      </article>
+
+      <article class="card pad-md">
+        <h3 class="h3">Fear & Greed Index</h3>
+        <canvas class="chart" id="gauge"></canvas>
+        <div class="meta-line" id="gaugeLabel" style="text-align:center;margin-top:8px;">Now: Greed (72)</div>
+      </article>
+    </div>
+
+    <div class="widgets-row">
+      <article class="card pad-md">
+        <h3 class="h3">Systematic Positioning Guide</h3>
+        <div class="meta-line" style="margin-bottom:10px;">Select Position Mode: <span class="badge gray">Long Only</span></div>
+        <div class="table-wrap">
+          <table class="table" aria-label="Systematic Positioning Guide">
+            <thead>
+              <tr><th>Asset</th><th>Signal</th><th>Position</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bitwise 10 Crypto Index Fund</td>
+                <td><span class="badge green">bullish</span></td>
+                <td><span class="badge green">Long 100%</span></td>
+              </tr>
+              <tr>
+                <td>Bitcoin</td>
+                <td><span class="badge yellow">neutral</span></td>
+                <td><span class="badge gray">Long 50%</span></td>
+              </tr>
+              <tr>
+                <td>ETH/BTC</td>
+                <td><span class="badge green">bullish</span></td>
+                <td><span class="badge green">Long 100%</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card pad-md">
+        <h3 class="h3">Crypto Portfolio</h3>
+        <canvas class="chart" id="pie1"></canvas>
+        <div class="meta-line" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <span class="badge gray" style="background:#2563eb;color:#fff">Bitcoin 20%</span>
+          <span class="badge gray" style="background:#9333ea;color:#fff">Altcoins 50%</span>
+          <span class="badge gray" style="background:#0ea5e9;color:#fff">Cash 30%</span>
+        </div>
+      </article>
+
+      <article class="card pad-md">
+        <h3 class="h3">CORE4 Portfolio</h3>
+        <canvas class="chart" id="pie2"></canvas>
+        <div class="meta-line" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <span class="badge gray" style="background:#1d4ed8;color:#fff">Stocks 60%</span>
+          <span class="badge gray" style="background:#ef4444;color:#fff">Gold 30%</span>
+          <span class="badge gray" style="background:#f59e0b;color:#111827">Cash 5%</span>
+          <span class="badge gray" style="background:#8b5cf6;color:#fff">Bitcoin 5%</span>
+        </div>
+      </article>
+    </div>
+
+    <div class="card pad-md" style="border-radius:999px;display:flex;justify-content:center;align-items:center">
+      <a class="btn primary" href="#">Go To Quantitative Tools Dashboard</a>
+    </div>
+  </section>
+
+  <!-- ========== TEXTUAL SECTIONS (unchanged) ========== -->
+  <section id="research" class="panel reveal">
+    <article class="card pad-lg">
+      <div class="eyebrow">Read Research Reports and Market Insights</div>
+      <h2 class="headline">Understand the market beyond the noise.</h2>
+      <p class="lede">Our quantitative notes and evidence-based reports filter signal from noise. Explore the latest updates, macro views, and positioning changes across crypto.</p>
+      <a class="btn" href="#">View More</a>
+    </article>
+    <aside class="card pad-md rail-wrap" data-rail="research"></aside>
+  </section>
+
+  <section id="learn" class="panel reveal">
+    <article class="card pad-lg">
+      <div class="eyebrow">Learn Crypto From the Ground Up</div>
+      <h2 class="headline">Clear lessons. No fluff. Practical skills.</h2>
+      <p class="lede">Bite-sized modules designed to get you fluent with digital assets—mechanics, risks, and strategies that actually matter in the real world.</p>
+      <a class="btn" href="#">Start Learning</a>
+    </article>
+    <aside class="card pad-md rail-wrap" data-rail="learn"></aside>
+  </section>
+
+  <section id="trades" class="panel reveal">
+    <article class="card pad-lg">
+      <div class="eyebrow">See The Trades We're Making</div>
+      <h2 class="headline">Where conviction meets execution.</h2>
+      <p class="lede">Follow our structured approach—from regime detection to position sizing. Review the latest setups, rationale, and post-trade notes.</p>
+      <a class="btn" href="#">Go To Trades</a>
+    </article>
+    <aside class="card pad-md rail-wrap" data-rail="trades"></aside>
+  </section>
+
+  <!-- ========== VERY BOTTOM CONTENT (unchanged) ========== -->
+  <section id="deepdive" class="reveal">
+    <div class="grid-2">
+      <article class="card pad-md">
+        <h3 class="h3">Gold</h3>
+        <canvas class="chart" id="gold"></canvas>
+      </article>
+      <article class="card pad-md">
+        <h3 class="h3">US Dollar Index</h3>
+        <canvas class="chart" id="dxy"></canvas>
+      </article>
+    </div>
+
+    <div class="grid-2 tight" style="margin-top:18px">
+      <article class="card pad-md">
+        <h3 class="h3">Positioning Signals Backtests: Crypto</h3>
+        <div class="grid-2 tight">
+          <canvas class="chart small-bars" id="bt_btc"></canvas>
+          <canvas class="chart small-bars" id="bt_eth"></canvas>
+        </div>
+      </article>
+      <article class="card pad-md">
+        <h3 class="h3">Positioning Signals Backtests</h3>
+        <div class="grid-2 tight">
+          <canvas class="chart small-bars" id="bt_spx"></canvas>
+          <canvas class="chart small-bars" id="bt_bonds"></canvas>
+          <canvas class="chart small-bars" id="bt_gold"></canvas>
+          <canvas class="chart small-bars" id="bt_usd"></canvas>
+        </div>
+      </article>
+    </div>
+
+    <div class="grid-2" style="margin-top:18px">
+      <article class="card pad-md">
+        <h3 class="h3">Crypto Market Strength Index</h3>
+        <div class="grid-2 tight">
+          <canvas class="chart" id="cmsi_osc"></canvas>
+          <canvas class="chart" id="cmsi_btc"></canvas>
+        </div>
+      </article>
+      <article class="card pad-md">
+        <h3 class="h3">Economic Regime Model</h3>
+        <canvas class="chart" id="regime"></canvas>
+      </article>
+    </div>
+
+    <article class="card pad-md" style="margin-top:18px">
+      <h3 class="h3">Systematic Positioning Guide — Extended</h3>
+      <div class="table-wrap" style="max-height:420px">
+        <table class="table" aria-label="Extended Positioning Table">
+          <thead><tr><th>Asset</th><th>Signal</th><th>Position</th></tr></thead>
+          <tbody id="extendedRows"></tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</main>
+
+<footer class="container">© 2025 SHIFT — Visual showcase mockup for client review.</footer>
+
+<!-- ===== Theme Studio (only brand/accent/gradient; no other visual changes) ===== -->
+<button class="theme-fab" id="openStudio" title="Theme Studio" aria-label="Open Theme Studio">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+    <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8 3.5a8 8 0 0 0-.15-1.52l2.04-1.59-2-3.46-2.46.99a8.03 8.03 0 0 0-2.63-1.52L14.3 2h-4.6l-.5 2.9a8.03 8.03 0 0 0-2.63 1.52l-2.46-.99-2 3.46 2.04 1.59A8 8 0 0 0 4 12c0 .52.05 1.03.15 1.52L2.1 15.1l2 3.46 2.46-.99c.78.66 1.67 1.2 2.63 1.52l.5 2.9h4.6l.5-2.9c.96-.32 1.85-.86 2.63-1.52l2.46.99 2-3.46-2.04-1.59c.1-.49.15-1 .15-1.52Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<aside class="theme-panel" id="studio" aria-label="Theme Studio">
+  <h4>Theme Studio</h4>
+  <div class="theme-row">
+    <div>
+      <label for="brandPick">Primary (Brand)</label>
+      <input type="color" id="brandPick" />
+    </div>
+    <div>
+      <label for="accentPick">Accent</label>
+      <input type="color" id="accentPick" />
+    </div>
+  </div>
+  <div class="theme-row">
+    <div>
+      <label for="bgStartPick">Background Start</label>
+      <input type="color" id="bgStartPick" />
+    </div>
+    <div>
+      <label for="bgEndPick">Background End</label>
+      <input type="color" id="bgEndPick" />
+    </div>
+  </div>
+  <div class="theme-actions">
+    <button class="tbtn" id="copyVars">Copy</button>
+    <button class="tbtn" id="resetVars">Reset</button>
+    <button class="tbtn save" id="saveVars">Save</button>
+  </div>
+</aside>
+
+<script>
+/* ----------- Helpers (unchanged charts from your preferred version) ----------- */
+function dpiCanvas(canvas){
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.max(1, Math.round(rect.width * dpr));
+  canvas.height = Math.max(1, Math.round(rect.height * dpr));
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return ctx;
+}
+function drawPie(canvas, segments){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const r = Math.min(width, height)/2 - 8;
+  const cx = width/2, cy = height/2;
+  ctx.save(); ctx.translate(cx, cy);
+  let start = -Math.PI/2;
+  segments.forEach(s=>{
+    const end = start + (Math.PI*2) * (s.value/100);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r,start,end); ctx.closePath();
+    ctx.fillStyle = s.color; ctx.fill(); start = end;
+  });
+  ctx.beginPath(); ctx.arc(0,0,r*0.65,0,Math.PI*2);
+  ctx.globalCompositeOperation='destination-out'; ctx.fill();
+  ctx.restore();
+}
+function drawGauge(canvas, value){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const cx = width/2, cy = height*0.9;
+  const r = Math.min(width*0.45, height*0.9);
+  const parts = [
+    {from: Math.PI, to: Math.PI*1.33, color:'#ef4444'},
+    {from: Math.PI*1.33, to: Math.PI*1.66, color:'#f59e0b'},
+    {from: Math.PI*1.66, to: Math.PI*2, color:'#22c55e'}
+  ];
+  ctx.lineWidth = 18; ctx.lineCap = 'round';
+  parts.forEach(p=>{ctx.beginPath();ctx.strokeStyle=p.color;ctx.arc(cx,cy,r,p.from,p.to);ctx.stroke()});
+  const angle = Math.PI + (Math.PI * (value/100));
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
+  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(-6,0); ctx.lineTo(r-10,0); ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0,0,10,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+function drawHeatSeries(canvas, seed=1){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const pad = 14, w = width - pad*2, h = height - pad*2;
+  ctx.save(); ctx.translate(pad,pad);
+  const colors = ['#ef4444','#f59e0b','#22c55e','#22c55e','#ef4444','#22c55e'];
+  let x=0; function rnd(){ seed = (seed*9301+49297)%233280; return seed/233280; }
+  while(x<w){ const bandW = Math.max(10, 40 + Math.floor(rnd()*80)); ctx.fillStyle = colors[Math.floor(rnd()*colors.length)]; ctx.fillRect(x,0,bandW,h); x+=bandW; }
+  ctx.strokeStyle='#0f172a'; ctx.lineWidth=2; ctx.beginPath();
+  const steps = 180; let y = h*0.6;
+  for(let i=0;i<=steps;i++){ const px=(i/steps)*w; const dy=Math.sin(i/8)+Math.cos(i/13)+Math.sin(i/5+seed); y=(h*0.55)-dy*18+(i/steps)*h*0.18; (i===0?ctx.moveTo:ctx.lineTo).call(ctx,px,y); }
+  ctx.stroke(); ctx.restore();
+}
+function drawBars(canvas, vals){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const pad = 18; const chartW = width - pad*2; const chartH = height - pad*2;
+  const max = Math.max(...vals.map(v=>Math.abs(v))) * 1.2 || 1;
+  const xStep = chartW / vals.length;
+  const fills = ['#22c55e','#f59e0b','#ef4444','#2563eb'];
+  ctx.save(); ctx.translate(pad, pad + chartH/2);
+  ctx.strokeStyle='rgba(15,23,42,.25)'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(chartW,0); ctx.stroke();
+  vals.forEach((v, i)=>{ const barH=(v/max)*(chartH/2); const x=i*xStep+xStep*0.15; const w=xStep*0.7; ctx.fillStyle=fills[i]; if(barH>=0){ctx.fillRect(x,-barH,w,barH);} else {ctx.fillRect(x,0,w,-barH);} });
+  ctx.restore();
+}
+function drawOsc(canvas){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const pad = 14, w = width - pad*2, h = height - pad*2;
+  ctx.save(); ctx.translate(pad,pad);
+  ctx.strokeStyle='rgba(15,23,42,.25)'; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2; ctx.beginPath();
+  for(let i=0;i<=w;i++){ const y = h*0.5 - Math.sin(i/18)*h*0.45 - Math.cos(i/47)*h*0.15; (i===0?ctx.moveTo:ctx.lineTo).call(ctx,i,y); }
+  ctx.stroke(); ctx.restore();
+}
+function drawRegime(canvas){
+  const ctx = dpiCanvas(canvas);
+  const {width, height} = canvas.getBoundingClientRect();
+  const pad = 30, w = width - pad*2, h = height - pad*2;
+  ctx.save(); ctx.translate(pad,pad);
+  ctx.strokeStyle='rgba(15,23,42,.25)'; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.moveTo(w/2,0); ctx.lineTo(w/2,h); ctx.stroke();
+  ctx.fillStyle='rgba(15,23,42,.45)'; ctx.font='700 12px Inter';
+  ctx.fillText('↓ Growth', 6, h-8); ctx.fillText('↓ Inflation', w-90, h-8);
+  ctx.fillText('↑ Growth', w-70, 14); ctx.fillText('↑ Inflation', 10, 14);
+  ctx.strokeStyle='#2563eb'; ctx.lineWidth=2; ctx.beginPath();
+  for(let t=0;t<=1.0;t+=0.02){
+    const x = w* (0.5 + 0.35*Math.sin(t*Math.PI*2)*Math.exp(-t*0.2));
+    const y = h* (0.6 - 0.35*Math.cos(t*Math.PI*2)*Math.exp(-t*0.2));
+    (t===0?ctx.moveTo:ctx.lineTo).call(ctx,x,y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([6,6]); ctx.strokeStyle='#f59e0b';
+  ctx.beginPath(); ctx.moveTo(w*0.78, h*0.38); ctx.lineTo(w*0.85, h*0.45); ctx.lineTo(w*0.88, h*0.55); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+}
+
+/* Demo data (unchanged visuals) */
+const PIE1 = [
+  {label:'Cash', value:30, color:'#0ea5e9'},
+  {label:'Bitcoin', value:20, color:'#2563eb'},
+  {label:'Altcoins', value:50, color:'#9333ea'}
+];
+const PIE2 = [
+  {label:'Stocks', value:60, color:'#1d4ed8'},
+  {label:'Gold', value:30, color:'#ef4444'},
+  {label:'Cash', value:5, color:'#f59e0b'},
+  {label:'Bitcoin', value:5, color:'#8b5cf6'}
+];
+
+function renderAll(){
+  drawPie(document.getElementById('pie1'), PIE1);
+  drawPie(document.getElementById('pie2'), PIE2);
+  drawGauge(document.getElementById('gauge'), 72);
+  drawHeatSeries(document.getElementById('gold'), 7);
+  drawHeatSeries(document.getElementById('dxy'), 13);
+  drawBars(document.getElementById('bt_btc'), [749,29,-232,544]);
+  drawBars(document.getElementById('bt_eth'), [331,121,-354,98]);
+  drawBars(document.getElementById('bt_spx'), [186,-11,-39,135]);
+  drawBars(document.getElementById('bt_bonds'), [57,10,-64,3]);
+  drawBars(document.getElementById('bt_gold'), [120,32,-30,122]);
+  drawBars(document.getElementById('bt_usd'), [72,-15,-53,3]);
+  drawOsc(document.getElementById('cmsi_osc'));
+  drawHeatSeries(document.getElementById('cmsi_btc'), 21);
+  drawRegime(document.getElementById('regime'));
+}
+window.addEventListener('resize', renderAll);
+window.addEventListener('load', renderAll);
+
+/* Rails content (unchanged) */
+const DATA = {
+  research: [
+    { title:"Macro Update: Do markets still have room to run?", date:"July 1, 2025", icon:"chart" },
+    { title:"The two most likely scenarios for economy & markets", date:"March 14, 2025", icon:"bars" },
+    { title:"Hyperfluid: The emerging DeFi chain", date:"February 2025", icon:"bridge" },
+    { title:"Bitcoin positioning: Risk-on disinflation", date:"May 2025", icon:"gauge" }
+  ],
+  learn: [
+    { title:"AI × Crypto: where the biggest innovations converge", date:"June 9, 2024", icon:"ai" },
+    { title:"Intents: The next breakthrough in crypto", date:"April 28, 2024", icon:"intent" },
+    { title:"How to program payment channels", date:"December 20, 2023", icon:"channels" },
+    { title:"Wallet security, done right", date:"October 2023", icon:"shield" }
+  ],
+  trades: [
+    { title:"This could be one of the leading projects in DeFi", date:"Jan 18, 2024", icon:"candles" },
+    { title:"We're trading the dip on AKT again", date:"Nov 30, 2023", icon:"trend" },
+    { title:"Rotation into higher beta alts", date:"Aug 2023", icon:"rotate" },
+    { title:"Core4 portfolio rebalance notes", date:"Jun 2023", icon:"pie" }
+  ]
+};
+for (const [key, list] of Object.entries(DATA)) {
+  const wrap = document.querySelector(`[data-rail="${key}"]`);
+  const rail = document.createElement('div');
+  rail.className = 'rail';
+  rail.setAttribute('role','region');
+  rail.setAttribute('aria-label', key + ' items');
+
+  const left = btn('left', () => rail.scrollBy({ left: -wrap.clientWidth * 0.8, behavior:'smooth' }));
+  const right = btn('right', () => rail.scrollBy({ left:  wrap.clientWidth * 0.8, behavior:'smooth' }));
+  list.forEach(item => rail.appendChild(mini(item)));
+  const mask = document.createElement('div'); mask.className='rail-mask';
+  wrap.append(left, right, rail, mask);
+}
+function btn(side, onClick){
+  const b=document.createElement('button');
+  b.className='rail-btn ' + side;
+  b.innerHTML = arrowIcon(side);
+  b.addEventListener('click', onClick);
+  return b;
+}
+function mini({title,date,icon}){
+  const el=document.createElement('article');
+  el.className='mini';
+  el.innerHTML = `
+    <div class="thumb">${iconSVG(icon)}</div>
+    <div class="copy">
+      <h4>${title}</h4>
+      <div class="meta">${calendarSVG()}<span>${date}</span></div>
+    </div>`;
+  return el;
+}
+function calendarSVG(){return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="4" stroke="currentColor" stroke-width="1.7"/><path d="M8 2v4M16 2v4M3 9h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;}
+function arrowIcon(dir){const d=dir==='left'?"M15 6l-6 6 6 6":"M9 6l6 6-6 6";return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity=".35"/><path d="${d}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function iconSVG(name){const s="#fff", f="#fff";const svg=(c)=>`<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${c}</svg>`;switch(name){
+  case'chart':return svg(`<path d="M4 18h16M7 15V9m5 6v-9m5 9v-6" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'bars':return svg(`<path d="M4 8h16M4 12h16M4 16h16" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'bridge':return svg(`<path d="M3 14h18M5 14V9m14 5V9M8 14V7m8 7V7" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'gauge':return svg(`<path d="M4 14a8 8 0 0 1 16 0" stroke="${s}" stroke-width="2"/><path d="M12 14l4-4" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'ai':return svg(`<rect x="5" y="5" width="14" height="14" rx="3" stroke="${s}" stroke-width="2"/><text x="12" y="15" text-anchor="middle" font-size="8" font-weight="700" fill="${f}" font-family="Inter, system-ui">AI</text>`);
+  case'intent':return svg(`<path d="M6 12h12M6 8h10M6 16h8" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'channels':return svg(`<path d="M7 7h4v4H7V7Zm6 6h4v4h-4v-4Z" stroke="${s}" stroke-width="2"/><path d="M11 9l6 6" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'shield':return svg(`<path d="M12 3l7 3v5c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3Z" stroke="${s}" stroke-width="2" fill="none"/>`);
+  case'candles':return svg(`<path d="M7 8v8M12 6v12M17 10v8" stroke="${s}" stroke-width="2" stroke-linecap="round"/><path d="M5 10h4M10 8h4M15 12h4" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'trend':return svg(`<path d="M4 16l5-5 3 3 6-6" stroke="${s}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`);
+  case'rotate':return svg(`<path d="M7 7h10v10H7z" stroke="${s}" stroke-width="2"/><path d="M10 7v-2m4 14v-2m4-4h2M4 12h2" stroke="${s}" stroke-width="2" stroke-linecap="round"/>`);
+  case'pie':return svg(`<path d="M12 4a8 8 0 1 0 8 8h-8V4Z" stroke="${s}" stroke-width="2" fill="none"/><path d="M12 4v8h8" stroke="${s}" stroke-width="2"/>`);
+  default:return svg(`<circle cx="12" cy="12" r="5" stroke="${s}" stroke-width="2"/>`);
+}}
+
+/* Mobile nav toggle */
+const nav=document.getElementById('nav');
+document.getElementById('burger').addEventListener('click',()=>nav.classList.toggle('open'));
+
+/* Extended table rows */
+const EXTENDED = [
+  'Avalanche','Gold','S&P 500','Russell 2000','Japanese Equities','MTUM: Momentum Factor',
+  'Dogecoin','GDX – Gold Miners','Nasdaq','Chinese Equities','European Equities','SMH: Semiconductor ETF',
+  'US Dollar Index','US Treasuries 10y','Oil','Silver','USDJPY','EURUSD','AAPL','NVDA'
+];
+const tbody = document.getElementById('extendedRows');
+EXTENDED.forEach((name,i)=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${name}</td>
+    <td><span class="badge ${i%5===1?'yellow':'green'}">${i%5===1?'neutral':'bullish'}</span></td>
+    <td><span class="badge ${i%5===1?'gray':'green'}">${i%5===1?'Long 50%':'Long 100%'}</span></td>`;
+  tbody.appendChild(tr);
+});
+
+/* ================= Theme Studio (only color vars) ================= */
+const studio = document.getElementById('studio');
+document.getElementById('openStudio').addEventListener('click',()=>studio.classList.toggle('open'));
+
+const inputs = {
+  brand: document.getElementById('brandPick'),
+  accent: document.getElementById('accentPick'),
+  bgStart: document.getElementById('bgStartPick'),
+  bgEnd: document.getElementById('bgEndPick')
+};
+function getVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function setVar(name,val){ document.documentElement.style.setProperty(name,val); }
+function toHex(color){ const c=document.createElement('canvas').getContext('2d'); c.fillStyle=color; return c.fillStyle; }
+function syncInputs(){
+  inputs.brand.value = toHex(getVar('--brand') || '#1f4ed8');
+  inputs.accent.value = toHex(getVar('--accent') || '#16a34a');
+  inputs.bgStart.value = toHex(getVar('--bg-start') || '#eef3f7');
+  inputs.bgEnd.value = toHex(getVar('--bg-end') || '#ffe8dc');
+}
+function applyTheme(t){
+  if(t.brand) setVar('--brand', t.brand);
+  if(t.accent) setVar('--accent', t.accent);
+  if(t.bgStart) setVar('--bg-start', t.bgStart);
+  if(t.bgEnd) setVar('--bg-end', t.bgEnd);
+}
+Object.values(inputs).forEach(inp=>{
+  inp.addEventListener('input', ()=>{
+    applyTheme({
+      brand: inputs.brand.value,
+      accent: inputs.accent.value,
+      bgStart: inputs.bgStart.value,
+      bgEnd: inputs.bgEnd.value
+    });
+  });
+});
+document.getElementById('saveVars').addEventListener('click', ()=>{
+  const t = {brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end')};
+  localStorage.setItem('shift_theme', JSON.stringify(t));
+  alert('Theme saved ✅');
+});
+document.getElementById('resetVars').addEventListener('click', ()=>{
+  applyTheme({brand:'#1f4ed8',accent:'#16a34a',bgStart:'#eef3f7',bgEnd:'#ffe8dc'});
+  localStorage.removeItem('shift_theme'); syncInputs();
+});
+document.getElementById('copyVars').addEventListener('click', ()=>{
+  const json = JSON.stringify({brand:getVar('--brand'),accent:getVar('--accent'),bgStart:getVar('--bg-start'),bgEnd:getVar('--bg-end')}, null, 2);
+  navigator.clipboard.writeText(json).then(()=>alert('Theme copied 📋'));
+});
+const saved = localStorage.getItem('shift_theme');
+if(saved){ try{ applyTheme(JSON.parse(saved)); }catch{} }
+syncInputs();
+
+/* Reveal on scroll (unchanged) */
+const io=new IntersectionObserver((entries)=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add('is-in')),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
